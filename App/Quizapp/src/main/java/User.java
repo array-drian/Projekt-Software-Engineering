@@ -7,10 +7,10 @@ import jakarta.inject.Named;
 
 @Named
 @RequestScoped
-public class Artikel {
-    private String name = "Filzpantoffeln 'Rudolph'";
+public class User {
+    private String name = "Max Mustermann'";
 
-    public Artikel() {}
+    public User() {}
 
     public String getName() {
         return name;
@@ -20,15 +20,15 @@ public class Artikel {
         this.name = name;
     }
 
-    // Method to save the Artikel to the database
+    // Method to save the User to the database
     public void saveToDatabase() {
-        String query = "INSERT INTO artikel (name) VALUES (?)";
+        String query = "INSERT INTO User (name) VALUES (?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, this.name);
             preparedStatement.executeUpdate();
-            System.out.println("Artikel saved: " + this.name);
+            System.out.println("User saved: " + this.name);
         } catch (SQLException e) {
             e.printStackTrace();
         }
