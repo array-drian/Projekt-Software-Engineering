@@ -6,6 +6,10 @@
 </h:head>
 <h:body>
   <h:outputText value="#{artikel.name}"></h:outputText>
+  <h:form>
+    <h:inputText value="#{artikel.name}" />
+    <h:commandButton value="Save Artikel" action="#{artikel.saveToDatabase}" />
+</h:form>
 </h:body>
 </html>
 
