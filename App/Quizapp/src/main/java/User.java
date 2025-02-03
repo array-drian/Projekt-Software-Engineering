@@ -1,36 +1,70 @@
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.io.Serializable;
 
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Named;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
-@Named
-@RequestScoped
-public class User {
-    private String name = "Max Mustermann'";
+@Entity
+public class User implements Serializable
+{
+    @Id
+    @GeneratedValue
+    private int userID;
 
-    public User() {}
+    private String userName;
 
-    public String getName() {
-        return name;
+    private String userPass;
+
+    @Column(nullable = false)
+    private boolean isMod = false;
+
+    //Constructor
+
+    public User() {
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public User(String userName, String userPass) {
+        this.userName = userName;
+        this.userPass = userPass;
     }
 
-    // Method to save the User to the database
-    public void saveToDatabase() {
-        String query = "INSERT INTO User (name) VALUES (?)";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            preparedStatement.setString(1, this.name);
-            preparedStatement.executeUpdate();
-            System.out.println("User saved: " + this.name);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public User(String userName, String userPass, boolean isMod) {
+        this.userName = userName;
+        this.userPass = userPass;
+        this.isMod = isMod;
     }
+
+    // Getter
+
+    public int getUserId() {
+        return this.userID;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public String getUserPass() {
+        return userPass;
+    }
+
+    public boolean getIsMod() {
+        return this.isMod;
+    }
+
+    //Setter
+
+    public void setName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserPass(String userPass) {
+        this.userPass = userPass;
+    }
+
+    public void setIsMod(boolean isMod) {
+        this.isMod = isMod;
+    }
+
 }
