@@ -3,8 +3,14 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 <h:head>
   <title>App</title>
+  <h:outputText value="#{loginController.checkLogin()}"/>
 </h:head>
 <h:body>
   <h2>App</h2>
+  <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
+  <h:form>
+    <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
+  </h:form>
+  <p class="error"><h:outputText value="#{loginController.failureMessage}"/></p>
 </h:body>
 </html>

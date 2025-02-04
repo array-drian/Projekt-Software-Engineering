@@ -7,47 +7,28 @@ import jakarta.inject.Named;
 @SessionScoped
 public class CurrentUser implements Serializable {
 
-    private int userID = 0;
-    private boolean isMod, isNormalUser = false;
+    private User user = null;
 
     public void reset() {
-        this.userID = 0;
-        this.isMod = false;
-        this.isNormalUser = false;
+        this.user= null;
     }
 
     //Getter
 
-    public int getUserID() {
-        return this.userID;
-    }
-
-    public boolean getIsMod() {
-        return this.isMod;
-    }
-
-    public boolean getIsNormalUser() {
-        return this.isNormalUser;
+    public User getUser() {
+        return this.user;
     }
 
     //Setter
 
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void setIsMod(boolean isMod) {
-        this.isMod = isMod;
-    }
-
-    public void setIsNormalUser(boolean isNormalUser) {
-        this.isNormalUser = isNormalUser;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     //Other
 
     public boolean isValid() {
-        return this.userID != 0 && (this.isMod || this.isNormalUser);
+        return this.user != null;
     }
 
 }

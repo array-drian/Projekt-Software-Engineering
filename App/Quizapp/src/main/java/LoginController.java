@@ -67,7 +67,15 @@ public class LoginController implements Serializable {
             NavigationHandler nh = fc.getApplication().getNavigationHandler();
             nh.handleNavigation(fc, null, "index.xhtml?faces-redirect=true");
         }
+    }
 
+    public void checkPermission() {
+        if(currentUser.isValid() && !currentUser.getUser().getIsMod()) {
+            failureMessage = "Sie dürfen auf diese Seite nicht zugreifen.";
+            FacesContext fc = FacesContext.getCurrentInstance();
+            NavigationHandler nh = fc.getApplication().getNavigationHandler();
+            nh.handleNavigation(fc, null, "app.xhtml?faces-redirect=true");
+        }
     }
 
     public String logout() {
@@ -88,10 +96,10 @@ public class LoginController implements Serializable {
     }
 
     public String login() {
-        if (currentUser.getIsMod()) {
+        if (currentUser.getUser().getIsMod()) {
             this.failureMessage = "";
             return "modpanel.xhtml?faces-redirect=true";
-        } else if (currentUser.getIsNormalUser()) {
+        } else if (!currentUser.getUser().getIsMod()) {
             this.failureMessage = "";
             return "app.xhtml?faces-redirect=true";
         } else {

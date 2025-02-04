@@ -34,12 +34,7 @@ public class App implements Serializable {
         currentUser.reset();
         User user = userDAO.getUserByNameAndPassword(userName, passHash);
         if(user != null) {
-            currentUser.setUserID(user.getUserId());
-            if(user.getIsMod() == true) {
-                currentUser.setIsMod(true);
-            }else {
-                currentUser.setIsNormalUser(true);
-            }
+            currentUser.setUser(user);
         }
     }
 }

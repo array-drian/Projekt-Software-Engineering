@@ -6,42 +6,42 @@
   <title>Home</title>
 </h:head>
 <h:body>
-  <h2>Register</h2>
+  <h2>Registrieren</h2>
 
   <h:form>
     <!-- Input fields for User details -->
-    <h:outputLabel for="userName" value="Username:" />
-    <h:inputText id="userName" value="#{userBean.userName}" required="true" />
+    <p><h:outputLabel for="userName" value="Benutzername:" /></p>
+    <p><h:inputText id="userName" value="#{userBean.userName}" required="true" /></p>
 
-    <h:outputLabel for="userPass" value="Password:" />
-    <h:inputSecret id="userPass" value="#{userBean.userPass}" required="true" />
+    <p><h:outputLabel for="userPass" value="Passwort:" /></p>
+    <p><h:inputSecret id="userPass" value="#{userBean.userPass}" required="true" /></p>
 
     <!-- Radio buttons for setting isMod (true or false) -->
-    <h:outputLabel for="isMod" value="Is Moderator?" />
-    <h:selectOneRadio id="isMod" value="#{userBean.isMod}">
-        <f:selectItem itemValue="#{true}" itemLabel="Yes" />
-        <f:selectItem itemValue="#{false}" itemLabel="No" />
-    </h:selectOneRadio>
+    <p><h:outputLabel for="isMod" value="Modaccount?" /></p>
+    <p><h:selectOneRadio id="isMod" value="#{userBean.isMod}">
+        <f:selectItem itemValue="#{true}" itemLabel="Ja" />
+        <f:selectItem itemValue="#{false}" itemLabel="Nein" />
+    </h:selectOneRadio></p>
     
     <!-- Command button to trigger the save action -->
-    <h:commandButton value="Save User" action="#{userBean.saveToDatabase}" />
+    <p><h:commandButton value="Registrieren" action="#{userBean.saveToDatabase}" /></p>
   </h:form>
 
-  <h2>Login</h2>
+  <h2>Anmelden</h2>
 
   <h:form>
-    <h:outputLabel value="Benutzername:" for="user"/>
-    <h:inputText id="user" value="#{loginController.userName}" size="40" required="true">
+    <p><h:outputLabel value="Benutzername:" for="user"/></p>
+    <p><h:inputText id="user" value="#{loginController.userName}" size="40" required="true">
       <f:event type="postValidate" listener="#{loginController.postValidateUser}"/>
-    </h:inputText>
-    <h:message for="user" styleClass="error"/>
+    </h:inputText></p>
+    <p><h:message for="user" styleClass="error"/></p>
 
-    <h:outputLabel value="Passwort: " for="password"/>
-    <h:inputSecret id="password" value="#{loginController.userPass}" size="40" required="true"
-      validator="#{loginController.validateLogin}"/>
-    <h:message for="password" styleClass="error"/>
+    <p><h:outputLabel value="Passwort: " for="password"/></p>
+    <p><h:inputSecret id="password" value="#{loginController.userPass}" size="40" required="true"
+      validator="#{loginController.validateLogin}"/></p>
+    <p><h:message for="password" styleClass="error"/></p>
 
-    <h:commandButton action="#{loginController.login}" value="Login"/>
+    <p><h:commandButton action="#{loginController.login}" value="Anmelden"/></p>
   </h:form>
 
   <p class="error"><h:outputText value="#{loginController.failureMessage}"/></p>
