@@ -1,3 +1,4 @@
+package user;
 import java.io.Serializable;
 
 import jakarta.enterprise.context.SessionScoped;

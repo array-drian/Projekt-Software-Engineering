@@ -1,3 +1,4 @@
+package other;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.persistence.EntityManagerFactory;

@@ -1,6 +1,8 @@
+package user;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import other.App;
 
 @Named
 @RequestScoped
@@ -16,35 +18,40 @@ public class UserBean {
     @Inject
     private LoginController loginController;
 
-    // Getters and Setters for form fields
+    @Inject
+    private App app;
+
+    //Getter
     public String getUserName() {
         return this.userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getUserPass() {
         return this.userPass;
     }
 
-    public void setUserPass(String userPass) {
-        this.userPass = userPass;
-    }
-
     public boolean getIsMod() {
         return this.isMod;
+    }
+    
+    //Setter
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserPass(String userPass) {
+        this.userPass = userPass;
     }
 
     public void setIsMod(boolean isMod) {
         this.isMod = isMod;
     }
 
-    // Method to save user to the database
+    //Other
     public void saveToDatabase() {
-        String hashedPass = App.hashPassword(userName, userPass, loginController.getSalt());
+        String hashedPass = app.hashPassword(userName, userPass, loginController.getSalt());
         User newUser = new User(userName, hashedPass, isMod);
-        userDAO.persist(newUser); // This will now use the manually managed EntityManager
+        userDAO.persist(newUser);
     }
 }

@@ -1,3 +1,4 @@
+package user;
 import java.io.Serializable;
 
 import jakarta.faces.application.FacesMessage;
@@ -10,6 +11,7 @@ import jakarta.faces.validator.ValidatorException;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import other.App;
 
 @Named
 @ViewScoped
@@ -23,8 +25,10 @@ public class LoginController implements Serializable {
 
     private static final String salt = "H7sk6V725NVxqDq05DVnraZV";
 
-    String userName, userPass, tempUsername;
-    String failureMessage = "";
+    private String userName;
+    private String userPass;
+    private String tempUsername;
+    private String failureMessage = "";
 
     //Getter
 

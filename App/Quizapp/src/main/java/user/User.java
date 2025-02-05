@@ -1,10 +1,16 @@
+package user;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import suggestion.Suggestion;
 
 @Entity
 public class User implements Serializable
@@ -19,6 +25,9 @@ public class User implements Serializable
 
     @Column(nullable = false)
     private boolean isMod = false;
+
+    @OneToMany(mappedBy = "byUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Suggestion> suggestions = new ArrayList<>();
 
     //Constructor
 
@@ -36,7 +45,7 @@ public class User implements Serializable
         this.isMod = isMod;
     }
 
-    // Getter
+    //Getter
 
     public int getUserId() {
         return this.userID;
@@ -47,7 +56,7 @@ public class User implements Serializable
     }
 
     public String getUserPass() {
-        return userPass;
+        return this.userPass;
     }
 
     public boolean getIsMod() {
@@ -67,5 +76,4 @@ public class User implements Serializable
     public void setIsMod(boolean isMod) {
         this.isMod = isMod;
     }
-
 }

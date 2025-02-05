@@ -9,6 +9,7 @@
 <h:body>
   <h2>Modpanel</h2>
   <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
+  <a href="#{request.contextPath}/app.xhtml">Zur App</a>
   <h:form>
     <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
   </h:form>
