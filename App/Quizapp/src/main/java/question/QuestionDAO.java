@@ -1,4 +1,7 @@
 package question;
+import java.util.List;
+
+import answer.Answer;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -35,10 +38,17 @@ public class QuestionDAO {
                         .getSingleResult();
     }
 
-    private EntityTransaction beginTransaction() {
-        EntityTransaction tran = entityManager.getTransaction();
-        tran.begin();
-        return tran;
+    public List<Answer> getAnswersForQuestion(int questionID) {
+        return entityManager.createQuery("SELECT a FROM Answer a WHERE a.belongsTo.questionID = :questionID", Answer.class)
+                        .setParameter("questionID", questionID)
+                        .getResultList();
+    }
+
+    public EntityTransaction beginTransaction() {
+        if (!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+        }
+        return entityManager.getTransaction();
     }
 
     public void merge(Question question) {

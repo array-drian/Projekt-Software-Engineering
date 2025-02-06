@@ -26,7 +26,7 @@
       <h:inputText value="#{suggestionBean.correctAnswer}" required="true"/>
       <h:outputLabel value="Andere Antwortmöglichkeiten:" />
       <ui:repeat value="#{suggestionBean.answers}" var="answer" varStatus="status">
-        <h:inputText value="#{suggestionBean.answers[status.index]}" required="true"/>
+        <h:inputText value="#{suggestionBean.answers[status.index]}" required="true"/><br />
       </ui:repeat>
       <h:commandButton value="Frage einreichen" action="#{suggestionBean.submitSuggestion}" />
     </h:panelGrid>

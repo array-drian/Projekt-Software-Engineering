@@ -42,11 +42,13 @@ public class UserDAO {
         return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
-    private EntityTransaction beginTransaction() {
-        EntityTransaction tran = entityManager.getTransaction();
-        tran.begin();
-        return tran;
+    public EntityTransaction beginTransaction() {
+        if (!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+        }
+        return entityManager.getTransaction();
     }
+    
 
     public User getUserByNameAndPassword(String userName, String userPass) {
         try {

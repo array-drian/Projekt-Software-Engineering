@@ -1,4 +1,4 @@
-package suggestion;
+package question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,34 +10,24 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import question.Question;
-import question.QuestionDAO;
-import user.CurrentUser;
-import user.User;
 
 @Named
 @RequestScoped
-public class SuggestionBean {
+public class QuestionBean {
 
     private String question;
     private String category;
     private String correctAnswer;
     private List<String> answers = new ArrayList<>();
-    
-    @Inject
-    private CurrentUser currentUser;
 
     @Inject
-    private SuggestionDAO suggestionDAO;
+    private QuestionDAO questionDAO;
     
     @Inject
     private AnswerDAO answerDAO;
 
-    @Inject
-    private QuestionDAO questionDAO;
-
     //Constructor
-    public SuggestionBean() {
+    public QuestionBean() {
         for (int i = 0; i < 3; i++) {
             answers.add("");
         }
@@ -81,13 +71,7 @@ public class SuggestionBean {
 
     //Other
 
-    public void submitSuggestion() {
-        User user = currentUser.getUser();
-        if (user == null) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("No logged-in user found."));
-            return;
-        }
-    
+    public void createQuestion() {
         if (question == null || question.trim().isEmpty() || correctAnswer.trim().isEmpty() || answers.size() != 3) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Invalid input."));
             return;
@@ -105,10 +89,6 @@ public class SuggestionBean {
     
         questionDAO.persist(newQuestion);
     
-        Suggestion suggestion = new Suggestion(newQuestion, user);
-        suggestionDAO.persist(suggestion);
-    
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Suggestion submitted successfully!"));
-    }    
-    
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Question created successfully!"));
+    }
 }

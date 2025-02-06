@@ -35,10 +35,11 @@ public class AnswerDAO {
                         .getSingleResult();
     }
 
-    private EntityTransaction beginTransaction() {
-        EntityTransaction tran = entityManager.getTransaction();
-        tran.begin();
-        return tran;
+    public EntityTransaction beginTransaction() {
+        if (!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+        }
+        return entityManager.getTransaction();
     }
 
     public void merge(Answer answer) {

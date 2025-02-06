@@ -1,4 +1,6 @@
 package suggestion;
+import java.util.List;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -35,10 +37,23 @@ public class SuggestionDAO {
                         .getSingleResult();
     }
 
-    private EntityTransaction beginTransaction() {
-        EntityTransaction tran = entityManager.getTransaction();
-        tran.begin();
-        return tran;
+    public int countPendingSuggestions() {
+        return entityManager.createQuery(
+            "SELECT COUNT(s) FROM Suggestion s WHERE s.isAccepted = false", Integer.class)
+            .getSingleResult();
+    }
+    
+    public List<Suggestion> getPendingSuggestions() {
+        return entityManager.createQuery(
+            "SELECT s FROM Suggestion s WHERE s.isAccepted = false", Suggestion.class)
+            .getResultList();
+    }
+
+    public EntityTransaction beginTransaction() {
+        if (!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+        }
+        return entityManager.getTransaction();
     }
 
     public void merge(Suggestion suggestion) {
