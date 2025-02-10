@@ -5,12 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import answer.Answer;
+import category.Category;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import suggestion.Suggestion;
 
@@ -26,7 +29,9 @@ public class Question implements Serializable {
     @OneToMany(mappedBy = "belongsTo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "categoryID", nullable = false)
+    private Category category;
 
     @Column(nullable = false)
     private boolean isActive = false;
@@ -39,13 +44,13 @@ public class Question implements Serializable {
         this.answers = new ArrayList<>();
     }
 
-    public Question(String question, String category) {
+    public Question(String question, Category category) {
         this.question = question;
         this.category = category;
         this.answers = new ArrayList<>();
     }
 
-    public Question(String question, String category, boolean isActive) {
+    public Question(String question, Category category, boolean isActive) {
         this.question = question;
         this.category = category;
         this.isActive = isActive;
@@ -65,7 +70,7 @@ public class Question implements Serializable {
         return this.answers;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return this.category;
     }
 
@@ -78,7 +83,7 @@ public class Question implements Serializable {
         this.question = question;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

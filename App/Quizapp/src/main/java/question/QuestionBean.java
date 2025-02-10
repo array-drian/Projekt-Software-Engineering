@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import answer.Answer;
-import answer.AnswerDAO;
+import category.Category;
+import category.CategoryDAO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -16,15 +17,12 @@ import jakarta.inject.Named;
 public class QuestionBean {
 
     private String question;
-    private String category;
+    private Category category;
     private String correctAnswer;
     private List<String> answers = new ArrayList<>();
 
     @Inject
-    private QuestionDAO questionDAO;
-    
-    @Inject
-    private AnswerDAO answerDAO;
+    private CategoryDAO categoryDAO;
 
     //Constructor
     public QuestionBean() {
@@ -39,7 +37,7 @@ public class QuestionBean {
         return this.question;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return this.category;
     }
 
@@ -57,7 +55,7 @@ public class QuestionBean {
         this.question = question;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -71,13 +69,17 @@ public class QuestionBean {
 
     //Other
 
+    public List<Category> getAllCategories() {
+        return categoryDAO.getAllCategorys();
+    }
+
     public void createQuestion() {
-        if (question == null || question.trim().isEmpty() || correctAnswer.trim().isEmpty() || answers.size() != 3) {
+        if (question == null || question.trim().isEmpty() || category == null ||correctAnswer.trim().isEmpty() || answers.size() != 3) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Invalid input."));
             return;
         }
     
-        Question newQuestion = new Question(question, category);
+        Question newQuestion = new Question(question, category, true);
     
         Answer newCorrectAnswer = new Answer(correctAnswer, newQuestion, true);
         newQuestion.getAnswers().add(newCorrectAnswer);
@@ -87,7 +89,8 @@ public class QuestionBean {
             newQuestion.getAnswers().add(answer);
         }
     
-        questionDAO.persist(newQuestion);
+        category.getQuestions().add(newQuestion);
+        categoryDAO.persist(category);
     
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Question created successfully!"));
     }

@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import answer.AnswerDAO;
-import jakarta.annotation.PostConstruct; // Add this import
+import category.Category;
+import category.CategoryDAO;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -25,6 +27,9 @@ public class SuggestionController implements Serializable {
     private QuestionDAO questionDAO;
 
     @Inject
+    private CategoryDAO categoryDAO;
+
+    @Inject
     private AnswerDAO answerDAO;
 
     @PostConstruct
@@ -33,66 +38,78 @@ public class SuggestionController implements Serializable {
     }
 
     public void loadSuggestions() {
-        pendingSuggestions = suggestionDAO.getPendingSuggestions();
+        this.pendingSuggestions = suggestionDAO.getPendingSuggestions();
         if (pendingSuggestions != null && !pendingSuggestions.isEmpty()) {
-            suggestion = pendingSuggestions.get(index);
+            this.suggestion = pendingSuggestions.get(index);
         } else {
-            suggestion = null;
+            this.suggestion = null;
         }
     }
 
     public void acceptSuggestion() {
-        if (suggestion != null) {
-            suggestion.setIsAccepted(true);
-            suggestionDAO.merge(suggestion);
+        if (this.suggestion != null) {
+            this.suggestion.setIsAccepted(true);
+            suggestionDAO.merge(this.suggestion);
 
             Question question = suggestion.getQuestion();
             question.setIsActive(true);
             questionDAO.merge(question);
         }
-        nextSuggestion();
+        acceptedOrDeclined();
     }
     
     public void declineSuggestion() {
-        if (suggestion != null) {
-            suggestionDAO.remove(suggestion);
+        if (this.suggestion != null) {
+            suggestionDAO.remove(this.suggestion);
     
-            Question question = suggestion.getQuestion();
+            Question question = this.suggestion.getQuestion();
             if (!question.getIsActive()) {
-                questionDAO.merge(question);
-                questionDAO.remove(question);
+                Category category = question.getCategory();
+                category.getQuestions().remove(question);
+                categoryDAO.merge(category);
             }
         }
-        nextSuggestion();
+        acceptedOrDeclined();
+    }
+
+    public void acceptedOrDeclined() {
+        this.pendingSuggestions.remove(this.suggestion);
+        if (this.pendingSuggestions != null && !this.pendingSuggestions.isEmpty()) {
+            this.index = Math.min(Math.max(this.index, 0), this.pendingSuggestions.size() - 1);
+            this.suggestion = this.pendingSuggestions.get(this.index);
+        } else {
+            this.index = 0;
+            this.suggestion = null;
+        }
     }
     
     public void nextSuggestion() {
-        if (pendingSuggestions != null && !pendingSuggestions.isEmpty()) {
-            index = Math.min(index + 1, pendingSuggestions.size() - 1);
-            suggestion = pendingSuggestions.get(index);
+        if (this.pendingSuggestions != null && !this.pendingSuggestions.isEmpty()) {
+            this.index += 1;
+            this.suggestion = this.pendingSuggestions.get(this.index);
         } else {
-            suggestion = null;
+            this.suggestion = null;
         }
     }
 
     public void previousSuggestion() {
-        if (pendingSuggestions != null && !pendingSuggestions.isEmpty()) {
-            index = Math.max(index - 1, 0);
-            suggestion = pendingSuggestions.get(index);
+        if (this.pendingSuggestions != null && !this.pendingSuggestions.isEmpty()) {
+            this.index -=1 ;
+            this.suggestion = this.pendingSuggestions.get(this.index);
         } else {
-            suggestion = null;
+            this.suggestion = null;
         }
     }
 
     public Suggestion getSuggestion() {
-        return suggestion;
+        return this.suggestion;
     }
 
     public int getIndex() {
-        return index;
+        return this.index;
     }
 
     public int getMaxIndex() {
-        return pendingSuggestions != null ? pendingSuggestions.size() - 1 : 0;
+        return this.pendingSuggestions != null ? this.pendingSuggestions.size() - 1 : 0;
     }
 }

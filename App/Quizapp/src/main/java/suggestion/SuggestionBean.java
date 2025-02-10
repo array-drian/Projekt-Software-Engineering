@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import answer.Answer;
-import answer.AnswerDAO;
+import category.Category;
+import category.CategoryDAO;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -20,7 +21,7 @@ import user.User;
 public class SuggestionBean {
 
     private String question;
-    private String category;
+    private Category category;
     private String correctAnswer;
     private List<String> answers = new ArrayList<>();
     
@@ -29,12 +30,13 @@ public class SuggestionBean {
 
     @Inject
     private SuggestionDAO suggestionDAO;
-    
-    @Inject
-    private AnswerDAO answerDAO;
 
     @Inject
     private QuestionDAO questionDAO;
+
+    @Inject
+    private CategoryDAO categoryDAO;
+
 
     //Constructor
     public SuggestionBean() {
@@ -49,7 +51,7 @@ public class SuggestionBean {
         return this.question;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return this.category;
     }
 
@@ -67,7 +69,7 @@ public class SuggestionBean {
         this.question = question;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -81,6 +83,10 @@ public class SuggestionBean {
 
     //Other
 
+    public List<Category> getAllCategories() {
+        return categoryDAO.getAllCategorys();
+    }
+
     public void submitSuggestion() {
         User user = currentUser.getUser();
         if (user == null) {
@@ -88,7 +94,7 @@ public class SuggestionBean {
             return;
         }
     
-        if (question == null || question.trim().isEmpty() || correctAnswer.trim().isEmpty() || answers.size() != 3) {
+        if (question == null || question.trim().isEmpty() || category == null || correctAnswer.trim().isEmpty() || answers.size() != 3) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Invalid input."));
             return;
         }
@@ -103,7 +109,8 @@ public class SuggestionBean {
             newQuestion.getAnswers().add(answer);
         }
     
-        questionDAO.persist(newQuestion);
+        category.getQuestions().add(newQuestion);
+        categoryDAO.persist(category);
     
         Suggestion suggestion = new Suggestion(newQuestion, user);
         suggestionDAO.persist(suggestion);
