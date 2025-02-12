@@ -1,7 +1,4 @@
-package question;
-import java.util.List;
-
-import answer.Answer;
+package game;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -13,7 +10,7 @@ import jakarta.persistence.EntityTransaction;
 
 @Named
 @ApplicationScoped
-public class QuestionDAO {
+public class GameDAO {
 
     @Inject
     private EntityManagerFactory emf;
@@ -32,25 +29,10 @@ public class QuestionDAO {
         }
     }
 
-    public Question getQuestionAtIndex(int questionID) {
-        return entityManager.createQuery("SELECT q FROM Question q WHERE q.questionID = :questionID", Question.class)
-                        .setParameter("questionID", questionID)
+    public Game getGameAtIndex(int gameID) {
+        return entityManager.createQuery("SELECT m FROM Game m WHERE m.gameID = :gameID", Game.class)
+                        .setParameter("gameID", gameID)
                         .getSingleResult();
-    }
-
-    public List<Answer> getAnswersForQuestion(int questionID) {
-        return entityManager.createQuery("SELECT a FROM Answer a WHERE a.belongsTo.questionID = :questionID", Answer.class)
-                        .setParameter("questionID", questionID)
-                        .getResultList();
-    }
-
-    public List<Question> getRandomQuestions(int categoryID) {
-        return entityManager.createQuery(
-            "SELECT q FROM Question q WHERE q.category.categoryID = :categoryID ORDER BY FUNCTION('RAND')",
-            Question.class)
-                        .setParameter("categoryID", categoryID)
-                        .setMaxResults(10)
-                        .getResultList();
     }
 
     public EntityTransaction beginTransaction() {
@@ -60,22 +42,22 @@ public class QuestionDAO {
         return entityManager.getTransaction();
     }
 
-    public Question merge(Question question) {
+    public Game merge(Game game) {
         EntityTransaction tx = beginTransaction();
         try {
-            Question managedQuestion = entityManager.merge(question); // Store the managed instance
+            Game managedGame = entityManager.merge(game); // Store the managed instance
             tx.commit();
-            return managedQuestion; // Return the managed entity
+            return managedGame; // Return the managed entity
         } catch (RuntimeException e) {
             if (tx.isActive()) tx.rollback();
             throw e;
         }
-    }    
+    }
 
-    public void persist(Question question) {
+    public void persist(Game game) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.persist(question);
+            entityManager.persist(game);
             tx.commit();
         } catch (RuntimeException e) {
             if (tx.isActive()) tx.rollback();
@@ -83,10 +65,10 @@ public class QuestionDAO {
         }
     }
 
-    public void remove(Question question) {
+    public void remove(Game game) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.remove(question);
+            entityManager.remove(game);
             tx.commit();
         } catch (RuntimeException e) {
             if (tx.isActive()) tx.rollback();

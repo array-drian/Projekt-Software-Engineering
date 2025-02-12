@@ -63,10 +63,6 @@ public class QuestionBean {
         this.correctAnswer = correctAnswer;
     }
 
-    public void setAnswers(List<String> answers) {
-        this.answers = answers;
-    }
-
     //Other
 
     public List<Category> getAllCategories() {

@@ -56,11 +56,12 @@ public class SuggestionDAO {
         return entityManager.getTransaction();
     }
 
-    public void merge(Suggestion suggestion) {
+    public Suggestion merge(Suggestion suggestion) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.merge(suggestion);
+            Suggestion managedSuggestion = entityManager.merge(suggestion); // Store the managed instance
             tx.commit();
+            return managedSuggestion; // Return the managed entity
         } catch (RuntimeException e) {
             if (tx.isActive()) tx.rollback();
             throw e;
@@ -87,9 +88,5 @@ public class SuggestionDAO {
             if (tx.isActive()) tx.rollback();
             throw e;
         }
-    }
-
-    public void saveAnswer(Suggestion suggestion) {
-        persist(suggestion);
     }
 }

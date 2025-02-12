@@ -3,12 +3,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Game;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import suggestion.Suggestion;
 
@@ -28,6 +30,9 @@ public class User implements Serializable
 
     @OneToMany(mappedBy = "byUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Suggestion> suggestions = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "users")
+    private List<Game> matches = new ArrayList<>();
 
     //Constructor
 
@@ -61,6 +66,10 @@ public class User implements Serializable
 
     public boolean getIsMod() {
         return this.isMod;
+    }
+
+    public List<Game> getMatches() {
+        return this.matches;
     }
 
     //Setter

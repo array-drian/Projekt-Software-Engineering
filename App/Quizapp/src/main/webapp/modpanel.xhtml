@@ -11,10 +11,10 @@
 <h:body>
   <h2>Modpanel</h2>
   <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
-  <a href="#{request.contextPath}/app.xhtml">Zur App</a>
   <h:form>
     <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
   </h:form>
+  <a href="#{request.contextPath}/app.xhtml">Zur App</a>
   <h2>Neue Kategorie erstellen</h2>
   <h:form>
     <!-- Input fields for User details -->
@@ -24,7 +24,6 @@
     <!-- Command button to trigger the save action -->
     <p><h:commandButton value="Kategorie erstellen" action="#{categoryBean.saveToDatabase}" /></p>
   </h:form>
-  <h2>Neue Frage erstellen</h2>
   <h:form>
     <h:messages globalOnly="true" style="color:red;" />
     <h:panelGrid columns="2">
@@ -44,7 +43,7 @@
             <h:inputText value="#{questionBean.answers[status.index]}" required="true"/><br />
         </ui:repeat>
 
-        <h:commandButton value="Frage erstellen" action="#{questionBean.createQuestion}" />
+        <h:commandButton value="Frage einreichen" action="#{questionBean.createQuestion}" />
     </h:panelGrid>
   </h:form>
   <h2>Pending Suggestion</h2>

@@ -13,8 +13,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import quiz.Quiz;
 import suggestion.Suggestion;
 
 @Entity
@@ -39,22 +41,23 @@ public class Question implements Serializable {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Suggestion> suggestions = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "questions")
+    private List<Quiz> quizzes = new ArrayList<>();
+
     // Constructors
+
     public Question() {
-        this.answers = new ArrayList<>();
     }
 
     public Question(String question, Category category) {
         this.question = question;
         this.category = category;
-        this.answers = new ArrayList<>();
     }
 
     public Question(String question, Category category, boolean isActive) {
         this.question = question;
         this.category = category;
         this.isActive = isActive;
-        this.answers = new ArrayList<>();
     }
 
     // Getter methods
@@ -76,6 +79,10 @@ public class Question implements Serializable {
 
     public boolean getIsActive() {
         return this.isActive;
+    }
+
+    public List<Quiz> getQuizzes() {
+        return this.quizzes;
     }
 
     // Setter methods

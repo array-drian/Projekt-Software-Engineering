@@ -42,11 +42,12 @@ public class AnswerDAO {
         return entityManager.getTransaction();
     }
 
-    public void merge(Answer answer) {
+    public Answer merge(Answer answer) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.merge(answer);
+            Answer managedAnswer = entityManager.merge(answer); // Store the managed instance
             tx.commit();
+            return managedAnswer; // Return the managed entity
         } catch (RuntimeException e) {
             if (tx.isActive()) tx.rollback();
             throw e;
@@ -73,9 +74,5 @@ public class AnswerDAO {
             if (tx.isActive()) tx.rollback();
             throw e;
         }
-    }
-
-    public void saveAnswer(Answer answer) {
-        persist(answer);
     }
 }

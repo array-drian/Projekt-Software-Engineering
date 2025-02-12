@@ -62,16 +62,18 @@ public class UserDAO {
         }
     }
 
-    public void merge(User user) {
+    public User merge(User user) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.merge(user);
+            User managedUser = entityManager.merge(user); // Store the managed instance
             tx.commit();
+            return managedUser; // Return the managed entity
         } catch (RuntimeException e) {
             if (tx.isActive()) tx.rollback();
             throw e;
         }
     }
+
 
     public void persist(User user) {
         EntityTransaction tx = beginTransaction();
@@ -93,9 +95,5 @@ public class UserDAO {
             if (tx.isActive()) tx.rollback();
             throw e;
         }
-    }
-
-    public void saveUser(User user) {
-        persist(user);
     }
 }

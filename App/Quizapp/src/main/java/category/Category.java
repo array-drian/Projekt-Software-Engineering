@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import question.Question;
+import quiz.Quiz;
 
 @Entity
 public class Category implements Serializable
@@ -22,6 +23,9 @@ public class Category implements Serializable
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Quiz> quizzes = new ArrayList<>();
 
     //Constructor
 
@@ -44,6 +48,10 @@ public class Category implements Serializable
 
     public List<Question> getQuestions() {
         return this.questions;
+    }
+
+    public List<Quiz> getQuizzes() {
+        return this.quizzes;
     }
 
     //Setter
