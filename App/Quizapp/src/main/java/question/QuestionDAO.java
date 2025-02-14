@@ -46,7 +46,7 @@ public class QuestionDAO {
 
     public List<Question> getRandomQuestions(int categoryID) {
         return entityManager.createQuery(
-            "SELECT q FROM Question q WHERE q.category.categoryID = :categoryID ORDER BY FUNCTION('RAND')",
+            "SELECT q FROM Question q WHERE q.category.categoryID = :categoryID AND q.isActive = true ORDER BY FUNCTION('RAND')",
             Question.class)
                         .setParameter("categoryID", categoryID)
                         .setMaxResults(10)

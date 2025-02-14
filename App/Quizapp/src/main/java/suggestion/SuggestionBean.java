@@ -12,7 +12,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import question.Question;
-import question.QuestionDAO;
 import user.CurrentUser;
 import user.User;
 
@@ -30,9 +29,6 @@ public class SuggestionBean {
 
     @Inject
     private SuggestionDAO suggestionDAO;
-
-    @Inject
-    private QuestionDAO questionDAO;
 
     @Inject
     private CategoryDAO categoryDAO;

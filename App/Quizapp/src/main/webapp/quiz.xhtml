@@ -13,7 +13,6 @@
   <h:form>
     <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
   </h:form>
-  <a href="#{request.contextPath}/quiz.xhtml">Zu den Quizzes</a>
   <h2>Neues Quiz erstellen</h2>
   <h:form>
     <h:messages globalOnly="true" style="color:red;" />
@@ -32,6 +31,19 @@
     
     <!-- Command button to trigger the save action -->
     <p><h:commandButton value="Quiz erstellen" action="#{quizBean.createQuiz}" /></p>
+  </h:form>
+
+  <h2>Ausstehende Spiele</h2>
+  
+  <h:form>
+    <h:outputText value="#{gameController.getGame().gameID}" />
+
+    <h:commandButton value="Jetzt spielen" action="#{gameController.playGame(gameController.getGame())}" />
+
+    <h:commandButton value="Zurück" action="#{gameController.previousGame}" disabled="#{gameController.index == 0}" />
+    <h:commandButton value="Vor" action="#{gameController.nextGame}" disabled="#{gameController.index == gameController.maxIndex}" />
+
+    <h:outputText value="#{gameController.getIndex() + 1} / #{gameController.getMaxIndex() + 1}" />
   </h:form>
 </h:body>
 </html>

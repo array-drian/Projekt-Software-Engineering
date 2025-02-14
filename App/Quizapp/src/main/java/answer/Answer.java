@@ -44,7 +44,7 @@ public class Answer implements Serializable
 
     // Getter
 
-    public int getAnswerId() {
+    public int getAnswerID() {
         return this.answerID;
     }
 

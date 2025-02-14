@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+  <title>Quiz</title>
+  <h:outputText value="#{loginController.checkLogin()}"/>
+  <h:outputText value="#{gameController.checkGame()}"/>
+</h:head>
+<h:body>
+    <h2>Quiz</h2>
+    <p><h:outputText value="#{currentGame.getGame().getQuiz().getCategory().getCategory()}"/></p>
+    <h:form>
+        <!-- Display the Current Question -->
+        <h:outputText value="Frage: #{quizController.question.question}" />
+
+        <!-- Display Answer Buttons -->
+        <ui:repeat value="#{quizController.answers}" var="answer">
+            <h:commandButton value="#{answer.answer}" action="#{quizController.validateAnswer(answer)}" />
+        </ui:repeat>
+
+        <!-- Display Question Progress -->
+        <h:outputText value="Frage #{quizController.index + 1} von #{quizController.maxIndex + 1}" />
+
+        <h:commandButton value="Quiz beenden" action="#{quizController.endGame}" disabled="#{quizController.submittedAnswers != 10}" />
+
+        <!-- Display Score -->
+        <h:outputText value="Aktueller Punktestand: #{quizController.score}" />
+    </h:form>
+</h:body>
+</html>

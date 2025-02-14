@@ -3,7 +3,6 @@ package suggestion;
 import java.io.Serializable;
 import java.util.List;
 
-import answer.AnswerDAO;
 import category.Category;
 import category.CategoryDAO;
 import jakarta.annotation.PostConstruct;
@@ -28,9 +27,6 @@ public class SuggestionController implements Serializable {
 
     @Inject
     private CategoryDAO categoryDAO;
-
-    @Inject
-    private AnswerDAO answerDAO;
 
     @PostConstruct
     public void init() {

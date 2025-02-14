@@ -1,6 +1,4 @@
-package game;
-import java.util.List;
-
+package score;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -12,7 +10,7 @@ import jakarta.persistence.EntityTransaction;
 
 @Named
 @ApplicationScoped
-public class GameDAO {
+public class ScoreDAO {
 
     @Inject
     private EntityManagerFactory emf;
@@ -31,19 +29,12 @@ public class GameDAO {
         }
     }
 
-    public Game getGameAtIndex(int gameID) {
-        return entityManager.createQuery("SELECT m FROM Game m WHERE m.gameID = :gameID", Game.class)
-                        .setParameter("gameID", gameID)
+    public Score getScoreAtIndex(int scoreID) {
+        return entityManager.createQuery("SELECT s FROM Score s WHERE s.scoreID = :scoreID", Score.class)
+                        .setParameter("scoreID", scoreID)
                         .getSingleResult();
     }
 
-    public List<Game> getPendingGamesForUser(int userID) {
-        return entityManager.createQuery(
-                        "SELECT g FROM Game g JOIN g.users u WHERE u.userID = :userID AND g.isFinished = false", Game.class)
-                        .setParameter("userID", userID)
-                        .getResultList();
-    }
-    
     public EntityTransaction beginTransaction() {
         if (!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
@@ -51,22 +42,22 @@ public class GameDAO {
         return entityManager.getTransaction();
     }
 
-    public Game merge(Game game) {
+    public Score merge(Score score) {
         EntityTransaction tx = beginTransaction();
         try {
-            Game managedGame = entityManager.merge(game); // Store the managed instance
+            Score managedScore = entityManager.merge(score); // Store the managed instance
             tx.commit();
-            return managedGame; // Return the managed entity
+            return managedScore; // Return the managed entity
         } catch (RuntimeException e) {
             if (tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
-    public void persist(Game game) {
+    public void persist(Score score) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.persist(game);
+            entityManager.persist(score);
             tx.commit();
         } catch (RuntimeException e) {
             if (tx.isActive()) tx.rollback();
@@ -74,10 +65,10 @@ public class GameDAO {
         }
     }
 
-    public void remove(Game game) {
+    public void remove(Score score) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.remove(game);
+            entityManager.remove(score);
             tx.commit();
         } catch (RuntimeException e) {
             if (tx.isActive()) tx.rollback();

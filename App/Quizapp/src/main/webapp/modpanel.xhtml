@@ -46,19 +46,19 @@
         <h:commandButton value="Frage einreichen" action="#{questionBean.createQuestion}" />
     </h:panelGrid>
   </h:form>
-  <h2>Pending Suggestion</h2>
+  <h2>Ausstehende Vorschläge</h2>
   
   <h:form>
     <!-- Display the current suggestion's question -->
     <h:outputText value="#{suggestionController.getSuggestion().question.question}" />
 
     <!-- Buttons to accept or decline the suggestion -->
-    <h:commandButton value="Accept" action="#{suggestionController.acceptSuggestion}"></h:commandButton>
-    <h:commandButton value="Decline" action="#{suggestionController.declineSuggestion}"></h:commandButton>
+    <h:commandButton value="Akzeptieren" action="#{suggestionController.acceptSuggestion}"></h:commandButton>
+    <h:commandButton value="Ablehnen" action="#{suggestionController.declineSuggestion}"></h:commandButton>
 
     <!-- Navigation buttons -->
-    <h:commandButton value="Previous" action="#{suggestionController.previousSuggestion}" disabled="#{suggestionController.index == 0}" />
-    <h:commandButton value="Next" action="#{suggestionController.nextSuggestion}" disabled="#{suggestionController.index == suggestionController.maxIndex}" />
+    <h:commandButton value="Zurück" action="#{suggestionController.previousSuggestion}" disabled="#{suggestionController.index == 0}" />
+    <h:commandButton value="Vor" action="#{suggestionController.nextSuggestion}" disabled="#{suggestionController.index == suggestionController.maxIndex}" />
 
     <!-- Display current index out of total -->
     <h:outputText value="#{suggestionController.getIndex() + 1} / #{suggestionController.getMaxIndex() + 1}" />

@@ -28,7 +28,6 @@ public class LoginController implements Serializable {
     private String userName;
     private String userPass;
     private String tempUsername;
-    private String failureMessage = "";
 
     //Getter
 
@@ -38,10 +37,6 @@ public class LoginController implements Serializable {
 
     public String getUserPass() {
         return this.userPass;
-    }
-
-    public String getFailureMessage() {
-        return this.failureMessage;
     }
 
     public String getSalt() {
@@ -58,15 +53,10 @@ public class LoginController implements Serializable {
         this.userPass = userPass;
     }
 
-    public void setFailureMessage(String failureMessage) {
-        this.failureMessage = failureMessage;
-    }
-
     //Other
 
     public void checkLogin() {
         if(!currentUser.isValid()) {
-            failureMessage = "Bitte loggen Sie sich ein.";
             FacesContext fc = FacesContext.getCurrentInstance();
             NavigationHandler nh = fc.getApplication().getNavigationHandler();
             nh.handleNavigation(fc, null, "index.xhtml?faces-redirect=true");
@@ -75,7 +65,6 @@ public class LoginController implements Serializable {
 
     public void checkPermission() {
         if(currentUser.isValid() && !currentUser.getUser().getIsMod()) {
-            failureMessage = "Sie dürfen auf diese Seite nicht zugreifen.";
             FacesContext fc = FacesContext.getCurrentInstance();
             NavigationHandler nh = fc.getApplication().getNavigationHandler();
             nh.handleNavigation(fc, null, "app.xhtml?faces-redirect=true");
@@ -101,13 +90,10 @@ public class LoginController implements Serializable {
 
     public String login() {
         if (currentUser.getUser().getIsMod()) {
-            this.failureMessage = "";
             return "modpanel.xhtml?faces-redirect=true";
         } else if (!currentUser.getUser().getIsMod()) {
-            this.failureMessage = "";
             return "app.xhtml?faces-redirect=true";
         } else {
-            this.failureMessage = "Passwort und Benutzername nicht erkannt.";
             return "";
         }
     }

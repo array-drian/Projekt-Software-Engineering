@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import score.Score;
 import suggestion.Suggestion;
 
 @Entity
@@ -34,6 +35,9 @@ public class User implements Serializable
     @ManyToMany(mappedBy = "users")
     private List<Game> matches = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Score> scores = new ArrayList<>();
+
     //Constructor
 
     public User() {
@@ -52,7 +56,7 @@ public class User implements Serializable
 
     //Getter
 
-    public int getUserId() {
+    public int getUserID() {
         return this.userID;
     }
 
@@ -70,6 +74,10 @@ public class User implements Serializable
 
     public List<Game> getMatches() {
         return this.matches;
+    }
+
+    public List<Score> getScores() {
+        return this.scores;
     }
 
     //Setter

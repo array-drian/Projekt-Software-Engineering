@@ -41,7 +41,7 @@ public class Suggestion implements Serializable
 
     // Getter
 
-    public int getSuggestionId() {
+    public int getSuggestionID() {
         return this.suggestionID;
     }
 

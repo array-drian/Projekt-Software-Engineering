@@ -61,7 +61,7 @@ public class Question implements Serializable {
     }
 
     // Getter methods
-    public int getQuestionId() {
+    public int getQuestionID() {
         return this.questionID;
     }
 

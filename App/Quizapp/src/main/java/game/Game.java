@@ -13,8 +13,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import quiz.Quiz;
+import score.Score;
 import user.User;
 
 @Entity
@@ -41,6 +43,9 @@ public class Game implements Serializable {
 
     @Column(nullable = false)
     private boolean isFinished = false;
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Score> scores = new ArrayList<>();
 
     // Constructors
 
@@ -71,6 +76,10 @@ public class Game implements Serializable {
 
     public Quiz getQuiz() {
         return this.quiz;
+    }
+
+    public List<Score> getScores() {
+        return this.scores;
     }
 
     // Setter methods
