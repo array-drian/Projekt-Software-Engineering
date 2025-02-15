@@ -1,12 +1,14 @@
 package category;
 
-import jakarta.enterprise.context.RequestScoped;
+import java.io.Serializable;
+
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import  jakarta.inject.Named;
 
 @Named
-@RequestScoped
-public class CategoryBean {
+@ViewScoped
+public class CategoryBean implements Serializable{
 
     private String category;
 

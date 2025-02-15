@@ -32,16 +32,54 @@ public class GameDAO {
     }
 
     public Game getGameAtIndex(int gameID) {
-        return entityManager.createQuery("SELECT m FROM Game m WHERE m.gameID = :gameID", Game.class)
-                        .setParameter("gameID", gameID)
-                        .getSingleResult();
+        return entityManager.createQuery(
+            "SELECT m FROM Game m " +
+            "WHERE m.gameID = :gameID", Game.class)
+            .setParameter("gameID", gameID)
+            .getSingleResult();
     }
 
-    public List<Game> getPendingGamesForUser(int userID) {
+    public List<Game> getPendingSingleplayerGamesForUser(int userID) {
         return entityManager.createQuery(
-                        "SELECT g FROM Game g JOIN g.users u WHERE u.userID = :userID AND g.isFinished = false", Game.class)
-                        .setParameter("userID", userID)
-                        .getResultList();
+            "SELECT g FROM Game g JOIN g.users u " +
+            "WHERE u.userID = :userID " +
+            "AND g.isFinished = false " +
+            "AND g.isMultiplayer = false", Game.class)
+            .setParameter("userID", userID)
+            .getResultList();
+    }
+
+    public List<Game> getPendingMultiplayerGamesForUser(int userID) {
+        return entityManager.createQuery(
+            "SELECT g FROM Game g JOIN g.users u " +
+            "WHERE u.userID = :userID " +
+            "AND g.isFinished = false " +
+            "AND g.isMultiplayer = true " +
+            "AND SIZE(g.users) = g.maxPlayers", Game.class)
+            .setParameter("userID", userID)
+            .getResultList();
+    }
+
+    public List<Game> getWaitingMultiplayerGamesForUser(int userID) {
+        return entityManager.createQuery(
+            "SELECT g FROM Game g JOIN g.users u " +
+            "WHERE u.userID = :userID " +
+            "AND g.isFinished = false " +
+            "AND g.isMultiplayer = true " +
+            "AND SIZE(g.users) <> g.maxPlayers", Game.class)
+            .setParameter("userID", userID)
+            .getResultList();
+    }
+
+    public List<Game> getWaitingMultiplayerGamesWithoutUser(int userID) {
+        return entityManager.createQuery(
+            "SELECT g FROM Game g " +
+            "WHERE g.isFinished = false " +
+            "AND g.isMultiplayer = true " +
+            "AND SIZE(g.users) <> g.maxPlayers " +
+            "AND :userID NOT IN (SELECT u.userID FROM g.users u)", Game.class)
+            .setParameter("userID", userID)
+            .getResultList();
     }
     
     public EntityTransaction beginTransaction() {

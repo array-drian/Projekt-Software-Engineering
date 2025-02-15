@@ -14,9 +14,10 @@ import user.CurrentUser;
 @Named
 @ViewScoped
 public class GameController implements Serializable {
-    private int index = 0;
-    private List<Game> pendingGames;
-    private Game game;
+    private List<Game> pendingSingleplayerGames;
+    private List<Game> pendingMultiplayerGames;
+    private List<Game> waitingMultiplayerGamesWithoutUser;
+    private List<Game> waitingMultiplayerGamesForUser;
 
     @Inject
     private CurrentUser currentUser;
@@ -33,42 +34,26 @@ public class GameController implements Serializable {
     }
 
     public void loadGames() {
-        this.pendingGames = gameDAO.getPendingGamesForUser(currentUser.getUser().getUserID());
-        if (pendingGames != null && !pendingGames.isEmpty()) {
-            this.game = pendingGames.get(index);
-        } else {
-            this.game = null;
-        }
-    }
-    
-    public void nextGame() {
-        if (this.pendingGames != null && !this.pendingGames.isEmpty()) {
-            this.index += 1;
-            this.game = this.pendingGames.get(this.index);
-        } else {
-            this.game = null;
-        }
+        this.pendingSingleplayerGames = gameDAO.getPendingSingleplayerGamesForUser(currentUser.getUser().getUserID());
+        this.pendingMultiplayerGames = gameDAO.getPendingMultiplayerGamesForUser(currentUser.getUser().getUserID());
+        this.waitingMultiplayerGamesWithoutUser = gameDAO.getWaitingMultiplayerGamesWithoutUser(currentUser.getUser().getUserID());
+        this.waitingMultiplayerGamesForUser = gameDAO.getWaitingMultiplayerGamesForUser(currentUser.getUser().getUserID());
     }
 
-    public void previousGame() {
-        if (this.pendingGames != null && !this.pendingGames.isEmpty()) {
-            this.index -=1 ;
-            this.game = this.pendingGames.get(this.index);
-        } else {
-            this.game = null;
-        }
+    public List<Game> getPendingSingleplayerGames() {
+        return this.pendingSingleplayerGames;
     }
 
-    public Game getGame() {
-        return this.game;
+    public List<Game> getPendingMultiplayerGames() {
+        return this.pendingMultiplayerGames;
     }
 
-    public int getIndex() {
-        return this.index;
+    public List<Game> getWaitingMultiplayerGamesWithoutUser() {
+        return this.waitingMultiplayerGamesWithoutUser;
     }
 
-    public int getMaxIndex() {
-        return this.pendingGames != null ? this.pendingGames.size() - 1 : 0;
+    public List<Game> getWaitingMultiplayerGamesForUser() {
+        return this.waitingMultiplayerGamesForUser;
     }
 
     public void checkGame() {

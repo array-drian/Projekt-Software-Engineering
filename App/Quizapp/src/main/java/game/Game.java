@@ -29,6 +29,8 @@ public class Game implements Serializable {
     @Column(nullable = false)
     private boolean isMultiplayer = false;
 
+    private int maxPlayers = 1;
+
     @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(
         name = "game_user",
@@ -66,6 +68,10 @@ public class Game implements Serializable {
         return this.isMultiplayer;
     }
 
+    public int getMaxPlayers() {
+        return this.maxPlayers;
+    }
+
     public List<User> getUsers() {
         return this.users;
     }
@@ -86,6 +92,10 @@ public class Game implements Serializable {
 
     public void setIsMultiplayer(boolean isMultiplayer) {
         this.isMultiplayer = isMultiplayer;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
     }
 
     public void setIsFinished(boolean isFinished) {

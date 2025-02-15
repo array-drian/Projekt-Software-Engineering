@@ -1,12 +1,14 @@
 package user;
-import jakarta.enterprise.context.RequestScoped;
+import java.io.Serializable;
+
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import other.App;
 
 @Named
-@RequestScoped
-public class UserBean {
+@ViewScoped
+public class UserBean implements Serializable{
 
     private String userName;
     private String userPass;

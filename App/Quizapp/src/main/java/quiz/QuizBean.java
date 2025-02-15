@@ -1,5 +1,6 @@
 package quiz;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,9 @@ import category.Category;
 import category.CategoryDAO;
 import game.Game;
 import game.GameDAO;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import question.Question;
@@ -18,12 +19,13 @@ import user.CurrentUser;
 import user.User;
 
 @Named
-@RequestScoped
-public class QuizBean {
+@ViewScoped
+public class QuizBean implements Serializable{
 
     private List<Question> questions = new ArrayList<>();
     private Category category;
     private boolean isMultiplayer = false;
+    private int maxPlayers = 0;
 
     @Inject
     private CategoryDAO categoryDAO;
@@ -51,6 +53,10 @@ public class QuizBean {
         return this.isMultiplayer;
     }
 
+    public int getMaxPlayers() {
+        return this.maxPlayers;
+    }
+
     //Setter
 
     public void setCategory(Category category) {
@@ -59,6 +65,10 @@ public class QuizBean {
 
     public void setIsMultiplayer(boolean isMultiplayer) {
         this.isMultiplayer = isMultiplayer;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
     }
 
     //Other
@@ -82,9 +92,17 @@ public class QuizBean {
         }
         
         Game newGame = new Game(isMultiplayer, newQuiz);
+
+        if(this.isMultiplayer) {
+           newGame.setMaxPlayers(maxPlayers);
+        }
+
         newGame.getUsers().add(user);
         gameDAO.persist(newGame);
-    
+        
+        System.out.println("isMultiplayer: " + this.isMultiplayer);
+        System.out.println("maxPlayers: " + this.maxPlayers);
+
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Quiz created successfully!"));
     }
 }

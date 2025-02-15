@@ -1,20 +1,21 @@
 package question;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import answer.Answer;
 import category.Category;
 import category.CategoryDAO;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 @Named
-@RequestScoped
-public class QuestionBean {
+@ViewScoped
+public class QuestionBean implements Serializable{
 
     private String question;
     private Category category;
