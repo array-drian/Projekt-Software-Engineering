@@ -7,6 +7,7 @@ import java.util.List;
 import category.Category;
 import category.CategoryDAO;
 import game.Game;
+import game.GameController;
 import game.GameDAO;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -35,6 +36,9 @@ public class QuizBean implements Serializable{
 
     @Inject
     private GameDAO gameDAO;
+
+    @Inject
+    private GameController gameController;
 
     @Inject
     private CurrentUser currentUser;
@@ -99,9 +103,8 @@ public class QuizBean implements Serializable{
 
         newGame.getUsers().add(user);
         gameDAO.persist(newGame);
-        
-        System.out.println("isMultiplayer: " + this.isMultiplayer);
-        System.out.println("maxPlayers: " + this.maxPlayers);
+
+        gameController.loadGames();
 
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Quiz created successfully!"));
     }

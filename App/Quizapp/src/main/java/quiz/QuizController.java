@@ -82,7 +82,14 @@ public class QuizController implements Serializable {
         Score newScore = new Score(currentUser.getUser(), currentGame.getGame(), score);
         currentUser.getUser().getScores().add(newScore);
         currentGame.getGame().getScores().add(newScore);
-        currentGame.getGame().setIsFinished(true);
+        if(!currentGame.getGame().isMultiplayer()) {
+            currentGame.getGame().setIsFinished(true);
+        }else {
+            if(currentGame.getGame().getUsers().size() == currentGame.getGame().getScores().size()) {
+                currentGame.getGame().setIsFinished(true);
+            }
+        }
+        
 
         gameDAO.persist(currentGame.getGame());
 

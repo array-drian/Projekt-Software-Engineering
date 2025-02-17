@@ -38,70 +38,108 @@
         </h:selectOneMenu>
       </h:panelGroup>
 
-    <p><h:commandButton value="Quiz erstellen" action="#{quizBean.createQuiz}"><f:ajax execute="@form" render="@form" /></h:commandButton></p>
+    <p><h:commandButton value="Quiz erstellen" action="#{quizBean.createQuiz}">
+      <f:ajax execute="@form" render="gameWrapper" />
+    </h:commandButton></p>
   </h:form>
 
+  <h:panelGroup id="gameWrapper">
   <h2>Ausstehende Spiele</h2>
-  
-  <h3>Einzelspieler Spiele</h3>
+  <h:panelGroup rendered="#{empty gameController.pendingSingleplayerGames and 
+                            empty gameController.pendingMultiplayerGames and 
+                            empty gameController.waitingMultiplayerGamesWithoutUser and 
+                            empty gameController.waitingMultiplayerGamesForUser}">
+    <h3>Du hast keine ausstehenden Spiele</h3>
+  </h:panelGroup>
+  <h:panelGroup rendered="#{not empty gameController.pendingSingleplayerGames}">
+    <h3>Einzelspieler Spiele</h3>
 
-  <h:form>
-    <h:dataTable value="#{gameController.pendingSingleplayerGames}" var="game">
+    <h:form>
+      <h:dataTable value="#{gameController.pendingSingleplayerGames}" var="game">
         <h:column>
-            <f:facet name="header">Game ID</f:facet>
-            <h:outputText value="#{game.gameID}" />
+          <f:facet name="header">Game ID</f:facet>
+          <h:outputText value="#{game.gameID}" />
         </h:column>
 
         <h:column>
-            <f:facet name="header">Kategorie</f:facet>
-            <h:outputText value="#{game.quiz.category.category}" />
+          <f:facet name="header">Kategorie</f:facet>
+          <h:outputText value="#{game.quiz.category.category}" />
         </h:column>
 
         <h:column>
-            <f:facet name="header">Jetzt Spielen</f:facet>
-            <h:commandButton value="Jetzt spielen" action="#{gameController.playGame(game)}" />
+          <f:facet name="header">Jetzt Spielen</f:facet>
+          <h:commandButton value="Jetzt spielen" action="#{gameController.playGame(game)}" />
         </h:column>
-    </h:dataTable>
-  </h:form>
+      </h:dataTable>
+    </h:form>
+  </h:panelGroup>
+  <h:panelGroup rendered="#{not empty gameController.pendingMultiplayerGames or 
+                            not empty gameController.waitingMultiplayerGamesForUser}">
+    <h3>Mehrspieler Spiele</h3>
+  </h:panelGroup>
+  <h:panelGroup rendered="#{not empty gameController.pendingMultiplayerGames}">
+    <h4>Bereit zu spielen</h4>
 
-  <h3>Mehrspieler Spiele</h3>
-
-  <h4>Bereit zu spielen</h4>
-
-  <h:form>
-    <h:dataTable value="#{gameController.pendingMultiplayerGames}" var="game">
+    <h:form>
+      <h:dataTable value="#{gameController.pendingMultiplayerGames}" var="game">
         <h:column>
-            <f:facet name="header">Game ID</f:facet>
-            <h:outputText value="#{game.gameID}" />
-        </h:column>
-
-        <h:column>
-            <f:facet name="header">Kategorie</f:facet>
-            <h:outputText value="#{game.quiz.category.category}" />
+          <f:facet name="header">Game ID</f:facet>
+          <h:outputText value="#{game.gameID}" />
         </h:column>
 
         <h:column>
-            <f:facet name="header">Jetzt Spielen</f:facet>
-            <h:commandButton value="Jetzt spielen" action="#{gameController.playGame(game)}" />
-        </h:column>
-    </h:dataTable>
-  </h:form>
-
-  <h4>Warten auf Spieler</h4>
-
-  <h:form>
-    <h:dataTable value="#{gameController.waitingMultiplayerGamesForUser}" var="game">
-        <h:column>
-            <f:facet name="header">Game ID</f:facet>
-            <h:outputText value="#{game.gameID}" />
+          <f:facet name="header">Kategorie</f:facet>
+          <h:outputText value="#{game.quiz.category.category}" />
         </h:column>
 
         <h:column>
-            <f:facet name="header">Kategorie</f:facet>
-            <h:outputText value="#{game.quiz.category.category}" />
+          <f:facet name="header">Jetzt Spielen</f:facet>
+          <h:commandButton value="Jetzt spielen" action="#{gameController.playGame(game)}" />
         </h:column>
-    </h:dataTable>
-  </h:form>
+      </h:dataTable>
+    </h:form>
+  </h:panelGroup>
+  <h:panelGroup rendered="#{not empty gameController.waitingMultiplayerGamesForUser}">
+    <h4>Warten auf Spieler</h4>
 
+    <h:form>
+      <h:dataTable value="#{gameController.waitingMultiplayerGamesForUser}" var="game">
+        <h:column>
+          <f:facet name="header">Game ID</f:facet>
+          <h:outputText value="#{game.gameID}" />
+        </h:column>
+
+        <h:column>
+          <f:facet name="header">Kategorie</f:facet>
+          <h:outputText value="#{game.quiz.category.category}" />
+        </h:column>
+      </h:dataTable>
+    </h:form>
+  </h:panelGroup>
+  <h:panelGroup rendered="#{not empty gameController.waitingMultiplayerGamesWithoutUser}">
+    <h3>Spiele denen du beitreten kannst</h3>
+
+    <h:form>
+      <h:dataTable value="#{gameController.waitingMultiplayerGamesWithoutUser}" var="game">
+        <h:column>
+          <f:facet name="header">Game ID</f:facet>
+          <h:outputText value="#{game.gameID}" />
+        </h:column>
+
+        <h:column>
+          <f:facet name="header">Kategorie</f:facet>
+          <h:outputText value="#{game.quiz.category.category}" />
+        </h:column>
+
+        <h:column>
+          <f:facet name="header">Jetzt beitreten</f:facet>
+          <h:commandButton value="Jetzt beitreten" action="#{gameController.joinGame(game)}">
+            <f:ajax render="gameWrapper" />
+          </h:commandButton>
+        </h:column>
+      </h:dataTable>
+    </h:form>
+  </h:panelGroup>
+</h:panelGroup>
 </h:body>
 </html>

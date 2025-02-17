@@ -72,4 +72,13 @@ public class GameController implements Serializable {
             nh.handleNavigation(fc, null, "game.xhtml?faces-redirect=true");
         }
     }
+
+    public void joinGame(Game game) {
+        if(game != null) {
+            game.getUsers().add(currentUser.getUser());
+            gameDAO.persist(game);
+
+            loadGames();
+        }
+    }
 }

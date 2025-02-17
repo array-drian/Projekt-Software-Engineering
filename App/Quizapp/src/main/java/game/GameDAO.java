@@ -50,15 +50,20 @@ public class GameDAO {
     }
 
     public List<Game> getPendingMultiplayerGamesForUser(int userID) {
-        return entityManager.createQuery(
-            "SELECT g FROM Game g JOIN g.users u " +
-            "WHERE u.userID = :userID " +
-            "AND g.isFinished = false " +
-            "AND g.isMultiplayer = true " +
-            "AND SIZE(g.users) = g.maxPlayers", Game.class)
-            .setParameter("userID", userID)
-            .getResultList();
-    }
+    return entityManager.createQuery(
+        "SELECT g FROM Game g " +
+        "JOIN g.users u " +
+        "WHERE u.userID = :userID " +
+        "AND g.isFinished = false " +
+        "AND g.isMultiplayer = true " +
+        "AND SIZE(g.users) = g.maxPlayers " +
+        "AND NOT EXISTS ( " +
+        "   SELECT s FROM Score s " +
+        "   WHERE s.game = g AND s.user.userID = :userID" +
+        ")", Game.class)
+        .setParameter("userID", userID)
+        .getResultList();
+}   
 
     public List<Game> getWaitingMultiplayerGamesForUser(int userID) {
         return entityManager.createQuery(
