@@ -1,6 +1,7 @@
 package quiz;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import answer.Answer;
@@ -47,6 +48,7 @@ public class QuizController implements Serializable {
         if (pendingQuestions != null && !pendingQuestions.isEmpty()) {
             this.question = pendingQuestions.get(index);
             this.answersForCurrentQuestion = this.question.getAnswers();
+            Collections.shuffle(answersForCurrentQuestion);
         } else {
             this.question = null;
             this.answersForCurrentQuestion = null;
@@ -58,6 +60,7 @@ public class QuizController implements Serializable {
             this.index += 1;
             this.question = this.pendingQuestions.get(this.index);
             this.answersForCurrentQuestion = this.question.getAnswers();
+            Collections.shuffle(answersForCurrentQuestion);
         } else {
             this.question = null;
             this.answersForCurrentQuestion = null;

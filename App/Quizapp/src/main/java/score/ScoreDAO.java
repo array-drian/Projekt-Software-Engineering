@@ -1,4 +1,9 @@
 package score;
+
+import java.util.List;
+
+import category.Category;
+import game.Game;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -30,9 +35,83 @@ public class ScoreDAO {
     }
 
     public Score getScoreAtIndex(int scoreID) {
-        return entityManager.createQuery("SELECT s FROM Score s WHERE s.scoreID = :scoreID", Score.class)
-                        .setParameter("scoreID", scoreID)
-                        .getSingleResult();
+        return entityManager.createQuery("SELECT s FROM Score s " +
+            "WHERE s.scoreID = :scoreID", Score.class)
+            .setParameter("scoreID", scoreID)
+            .getSingleResult();
+    }
+
+    public Long getScoreCountForUser(int userID) {
+        return entityManager.createQuery(
+            "SELECT COUNT(s) FROM Score s " +
+            "WHERE s.user.userID = :userID " +
+            "AND s.game.isFinished = true", Long.class)
+            .setParameter("userID", userID)
+            .getSingleResult();
+    }
+    
+    public Long getTotalScoreForUser(int userID) {
+        return entityManager.createQuery(
+            "SELECT COALESCE(SUM(s.score), 0) FROM Score s " + 
+            "WHERE s.user.userID = :userID " + 
+            "AND s.game.isFinished = true", Long.class)
+            .setParameter("userID", userID)
+            .getSingleResult();
+    }
+    
+
+    public Category getMostPlayedCategoryForUser(int userID) {
+        return entityManager.createQuery(
+            "SELECT c FROM Category c " +
+            "JOIN c.quizzes q " +
+            "JOIN Game g ON g.quiz = q " +
+            "JOIN g.scores s " +
+            "WHERE s.user.userID = :userID " +
+            "GROUP BY c " +
+            "ORDER BY COUNT(g) DESC",
+            Category.class)
+            .setParameter("userID", userID)
+            .setMaxResults(1)
+            .getSingleResult();
+    }
+
+
+    public List<Game> getFinishedSingleplayerGamesForUser(int userID) {
+        return entityManager.createQuery(
+            "SELECT g FROM Game g " +
+            "JOIN g.scores s " +
+            "WHERE s.user.userID = :userID " +
+            "AND g.isFinished = true " +
+            "AND g.isMultiplayer = false", Game.class)
+            .setParameter("userID", userID)
+            .getResultList();
+    }
+
+    public List<Game> getFinishedMuliplayerGamesForUser(int userID) {
+        return entityManager.createQuery(
+            "SELECT g FROM Game g " +
+            "JOIN g.scores s " +
+            "WHERE s.user.userID = :userID " +
+            "AND g.isFinished = true " +
+            "AND g.isMultiplayer = true", Game.class)
+            .setParameter("userID", userID)
+            .getResultList();
+    }
+
+    public List<Game> getPlayedButUnfinishedMuliplayerGamesForUser(int userID) {
+        return entityManager.createQuery(
+            "SELECT g FROM Game g " +
+            "JOIN g.users u " +
+            "WHERE u.userID = :userID " +
+            "AND g.isFinished = false " +
+            "AND g.isMultiplayer = true " +
+            "AND SIZE(g.users) = g.maxPlayers " +
+            "AND EXISTS ( " +
+            "   SELECT s FROM Score s " +
+            "   WHERE s.game = g AND s.user.userID = :userID" +
+            ")", Game.class)
+            .setParameter("userID", userID)
+            .getResultList();
     }
 
     public EntityTransaction beginTransaction() {

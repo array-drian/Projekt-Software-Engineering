@@ -38,7 +38,7 @@
         </h:selectOneMenu>
       </h:panelGroup>
 
-    <p><h:commandButton value="Quiz erstellen" action="#{quizBean.createQuiz}">
+    <p><h:commandButton value="Quiz erstellen" action="#{gameController.createGame}">
       <f:ajax execute="@form" render="gameWrapper" />
     </h:commandButton></p>
   </h:form>

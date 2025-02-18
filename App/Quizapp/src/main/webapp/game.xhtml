@@ -12,20 +12,18 @@
     <h2>Quiz</h2>
     <p><h:outputText value="#{currentGame.getGame().getQuiz().getCategory().getCategory()}"/></p>
     <h:form>
-        <!-- Display the Current Question -->
         <h:outputText value="Frage: #{quizController.question.question}" />
 
-        <!-- Display Answer Buttons -->
         <ui:repeat value="#{quizController.answers}" var="answer">
             <h:commandButton value="#{answer.answer}" action="#{quizController.validateAnswer(answer)}" />
         </ui:repeat>
 
-        <!-- Display Question Progress -->
         <h:outputText value="Frage #{quizController.index + 1} von #{quizController.maxIndex + 1}" />
 
-        <h:commandButton value="Quiz beenden" action="#{quizController.endGame}" disabled="#{quizController.submittedAnswers != 10}" />
+        <h:panelGroup rendered="#{quizController.submittedAnswers == 10}">
+            <h:commandButton value="Quiz beenden" action="#{quizController.endGame}" />
+        </h:panelGroup>
 
-        <!-- Display Score -->
         <h:outputText value="Aktueller Punktestand: #{quizController.score}" />
     </h:form>
 </h:body>

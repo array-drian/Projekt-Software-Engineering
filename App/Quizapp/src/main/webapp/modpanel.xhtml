@@ -52,6 +52,11 @@
     <!-- Display the current suggestion's question -->
     <h:outputText value="#{suggestionController.getSuggestion().question.question}" />
 
+    <ui:repeat value="#{suggestionController.getSuggestion().question.getAnswers()}" var="answer">
+      <h:outputText value="#{answer.answer}" />
+    </ui:repeat>
+
+
     <!-- Buttons to accept or decline the suggestion -->
     <h:commandButton value="Akzeptieren" action="#{suggestionController.acceptSuggestion}"></h:commandButton>
     <h:commandButton value="Ablehnen" action="#{suggestionController.declineSuggestion}"></h:commandButton>

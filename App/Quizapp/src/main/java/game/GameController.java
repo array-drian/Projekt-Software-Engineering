@@ -9,6 +9,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import quiz.QuizBean;
 import user.CurrentUser;
 
 @Named
@@ -28,16 +29,25 @@ public class GameController implements Serializable {
     @Inject
     private CurrentGame currentGame;
 
+    @Inject
+    private QuizBean quizBean;
+
     @PostConstruct
     public void init() {
         loadGames();
     }
 
     public void loadGames() {
-        this.pendingSingleplayerGames = gameDAO.getPendingSingleplayerGamesForUser(currentUser.getUser().getUserID());
-        this.pendingMultiplayerGames = gameDAO.getPendingMultiplayerGamesForUser(currentUser.getUser().getUserID());
-        this.waitingMultiplayerGamesWithoutUser = gameDAO.getWaitingMultiplayerGamesWithoutUser(currentUser.getUser().getUserID());
-        this.waitingMultiplayerGamesForUser = gameDAO.getWaitingMultiplayerGamesForUser(currentUser.getUser().getUserID());
+        int userID = currentUser.getUser().getUserID();
+        this.pendingSingleplayerGames = gameDAO.getPendingSingleplayerGamesForUser(userID);
+        this.pendingMultiplayerGames = gameDAO.getPendingMultiplayerGamesForUser(userID);
+        this.waitingMultiplayerGamesWithoutUser = gameDAO.getWaitingMultiplayerGamesWithoutUser(userID);
+        this.waitingMultiplayerGamesForUser = gameDAO.getWaitingMultiplayerGamesForUser(userID);
+    }
+
+    public void createGame() {
+        quizBean.createQuiz();
+        loadGames();
     }
 
     public List<Game> getPendingSingleplayerGames() {
