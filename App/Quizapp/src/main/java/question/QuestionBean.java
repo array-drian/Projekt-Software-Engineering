@@ -15,19 +15,23 @@ import jakarta.inject.Named;
 
 @Named
 @ViewScoped
-public class QuestionBean implements Serializable{
+public class QuestionBean implements Serializable {
 
     private String question;
+
     private Category category;
+
     private String correctAnswer;
+
     private List<String> answers = new ArrayList<>();
 
     @Inject
     private CategoryDAO categoryDAO;
 
     //Constructor
+
     public QuestionBean() {
-        for (int i = 0; i < 3; i++) {
+        for(int i = 0; i < 3; i++) {
             answers.add("");
         }
     }
@@ -66,13 +70,16 @@ public class QuestionBean implements Serializable{
 
     //Other
 
+    //Get a List of all available Categories
     public List<Category> getAllCategories() {
         return categoryDAO.getAllCategorys();
     }
 
+    //Create a Question
     public void createQuestion() {
-        if (question == null || question.trim().isEmpty() || category == null ||correctAnswer.trim().isEmpty() || answers.size() != 3) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Invalid input."));
+        if(question == null || question.trim().isEmpty() || category == null ||correctAnswer.trim().isEmpty() || answers.size() != 3) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Deine Eingaben sind ungültig.", null);
+            FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
             return;
         }
     
@@ -81,7 +88,7 @@ public class QuestionBean implements Serializable{
         Answer newCorrectAnswer = new Answer(correctAnswer, newQuestion, true);
         newQuestion.getAnswers().add(newCorrectAnswer);
     
-        for (String answerText : answers) {
+        for(String answerText : answers) {
             Answer answer = new Answer(answerText, newQuestion);
             newQuestion.getAnswers().add(answer);
         }
@@ -89,6 +96,7 @@ public class QuestionBean implements Serializable{
         category.getQuestions().add(newQuestion);
         categoryDAO.persist(category);
     
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Question created successfully!"));
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die Frage wurde erfolgreich erstellt.", null);
+        FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
     }
 }

@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Profil</title>
+        <f:metadata>
+            <f:viewAction action="#{checkerController.checkLogin()}" />
+        </f:metadata>
+    </h:head>
+    <h:body>
+        <h2>Profil</h2>
+
+        <h2>Deine Nutzerdaten bearbeiten</h2>
+
+        <h:form id="editUserForm">
+            <h:outputLabel for="username" value="Neuer Benutzername:" />
+            <h:inputText id="username" value="#{currentUser.user.userName}" />
+    
+            <h:outputLabel for="currentPassword" value="Aktuelles Passwort:" />
+            <h:inputSecret id="currentPassword" value="#{userController.tempPassword}" required="true" />
+    
+            <h:outputLabel for="newPassword" value="Neues Passwort:" />
+            <h:inputSecret id="newPassword" value="#{userController.newPassword}" />
+    
+            <h:outputLabel for="confirmPassword" value="Neues Passwort bestätigen:" />
+            <h:inputSecret id="confirmPassword" value="#{userController.confirmPassword}" />
+    
+            <h:commandButton value="Speichern" action="#{userController.saveUser(currentUser.user)}">
+                <f:ajax execute="@form" render="@form" />
+            </h:commandButton>
+
+            <h:commandButton value="Nutzer löschen" action="#{userController.deleteUser(currentUser.user)}">
+                <f:ajax execute="@form" render="@form" />
+            </h:commandButton>
+            <h:messages for="editUserForm" layout="table" />
+        </h:form>
+    </h:body>
+</html>

@@ -20,11 +20,14 @@ import user.User;
 
 @Named
 @ViewScoped
-public class QuizBean implements Serializable{
+public class QuizBean implements Serializable {
 
     private List<Question> questions = new ArrayList<>();
+
     private Category category;
+
     private boolean isMultiplayer = false;
+
     private int maxPlayers = 0;
 
     @Inject
@@ -73,21 +76,24 @@ public class QuizBean implements Serializable{
 
     //Other
 
+    //Get a List of all available Categories
     public List<Category> getAllCategories() {
         return categoryDAO.getAllCategorys();
     }
 
+    //Create a Quiz
     public void createQuiz() {
         User user = currentUser.getUser();
         this.questions = questionDAO.getRandomQuestions(category.getCategoryID());
-        if (category == null || questions.size() != 10) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Invalid input."));
+        if(category == null || questions.size() != 10) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Deine Eingaben sind ungültig.", null);
+            FacesContext.getCurrentInstance().addMessage("createQuizForm", msg);
             return;
         }
     
         Quiz newQuiz = new Quiz(category);
     
-        for (Question question : questions) {
+        for(Question question : questions) {
             newQuiz.getQuestions().add(question);
         }
         
@@ -100,6 +106,7 @@ public class QuizBean implements Serializable{
         newGame.getUsers().add(user);
         gameDAO.persist(newGame);
 
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Quiz created successfully!"));
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Das Quiz wurde erfolgreich erstellt.", null);
+        FacesContext.getCurrentInstance().addMessage("createQuizForm", msg);
     }
 }

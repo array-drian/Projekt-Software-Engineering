@@ -13,8 +13,11 @@ import user.CurrentUser;
 @Named
 @ViewScoped
 public class ScoreController implements Serializable {
+
     private List<Game> finishedSingleplayerGamesForUser;
+
     private List<Game> finishedMultiplayerGamesForUser;
+
     private List<Game> playedButUnfinishedMultiplayerGamesForUser;
 
     @Inject
@@ -28,23 +31,7 @@ public class ScoreController implements Serializable {
         loadGames();
     }
 
-    public void loadGames() {
-        int userID = currentUser.getUser().getUserID();
-        this.finishedSingleplayerGamesForUser = scoreDAO.getFinishedSingleplayerGamesForUser(userID);
-        this.finishedMultiplayerGamesForUser = scoreDAO.getFinishedMuliplayerGamesForUser(userID);
-        this.playedButUnfinishedMultiplayerGamesForUser = scoreDAO.getPlayedButUnfinishedMuliplayerGamesForUser(userID);
-    }
-
-    public int getScoreForUserInGame(Game game) {
-        if (game != null) {
-            for (Score score : game.getScores()) {
-                if (score.getUser().getUserID() == currentUser.getUser().getUserID()) {
-                    return score.getScore();
-                }
-            }
-        }
-        return 0;
-    }
+    //Getter
 
     public List<Game> getFinishedSingleplayerGamesForUser() {
         return this.finishedSingleplayerGamesForUser;
@@ -56,5 +43,27 @@ public class ScoreController implements Serializable {
 
     public List<Game> getPlayedButUnfinishedMultiplayerGamesForUser() {
         return this.playedButUnfinishedMultiplayerGamesForUser;
+    }
+
+    //Other
+
+    //Fills the lists with data from the Database
+    public void loadGames() {
+        int userID = currentUser.getUser().getUserID();
+        this.finishedSingleplayerGamesForUser = scoreDAO.getFinishedSingleplayerGamesForUser(userID);
+        this.finishedMultiplayerGamesForUser = scoreDAO.getFinishedMuliplayerGamesForUser(userID);
+        this.playedButUnfinishedMultiplayerGamesForUser = scoreDAO.getPlayedButUnfinishedMuliplayerGamesForUser(userID);
+    }
+
+    //Gets the score for the current user in a given Game
+    public int getScoreForUserInGame(Game game) {
+        if(game != null) {
+            for(Score score : game.getScores()) {
+                if(score.getUser().getUserID() == currentUser.getUser().getUserID()) {
+                    return score.getScore();
+                }
+            }
+        }
+        return 0;
     }
 }

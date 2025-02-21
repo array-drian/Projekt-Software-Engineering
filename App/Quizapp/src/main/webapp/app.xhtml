@@ -3,21 +3,22 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets">
-<h:head>
-  <title>App</title>
-  <h:outputText value="#{loginController.checkLogin()}"/>
-</h:head>
-<h:body>
-  <h2>App</h2>
-  <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
-  <h:form>
-    <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
-  </h:form>
-  <a href="#{request.contextPath}/quiz.xhtml">Zu den Quizzes</a>
-  <h2>Neue Frage einreichen</h2>
-  <h:form>
-    <h:messages globalOnly="true" style="color:red;" />
-    <h:panelGrid columns="2">
+  <h:head>
+    <title>App</title>
+    <f:metadata>
+      <f:viewAction action="#{checkerController.checkLogin()}" />
+    </f:metadata>
+  </h:head>
+  <h:body>
+    <h2>App</h2>
+    <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
+    <h:form>
+      <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
+    </h:form>
+    <a href="#{request.contextPath}/quiz.xhtml">Zu den Quizzes</a>
+    <h2>Neue Frage einreichen</h2>
+    <h:form id="submitSuggestionForm">
+      <h:panelGrid columns="2">
         <h:outputLabel for="question" value="Frage:" />
         <h:inputText id="question" value="#{suggestionBean.question}" required="true"/>
 
@@ -31,11 +32,12 @@
 
         <h:outputLabel value="Andere Antwortmöglichkeiten:" />
         <ui:repeat value="#{suggestionBean.answers}" var="answer" varStatus="status">
-            <h:inputText value="#{suggestionBean.answers[status.index]}" required="true"/><br />
+          <h:inputText value="#{suggestionBean.answers[status.index]}" required="true"/><br />
         </ui:repeat>
 
         <h:commandButton value="Frage einreichen" action="#{suggestionBean.submitSuggestion}" />
-    </h:panelGrid>
-  </h:form>
-</h:body>
+      </h:panelGrid>
+      <h:messages for="submitSuggestionForm" layout="table" />
+    </h:form>
+  </h:body>
 </html>

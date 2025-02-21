@@ -13,8 +13,8 @@ import question.Question;
 import quiz.Quiz;
 
 @Entity
-public class Category implements Serializable
-{
+public class Category implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int categoryID;

@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import quiz.Quiz;
+import report.Report;
 import suggestion.Suggestion;
 
 @Entity
@@ -43,6 +44,9 @@ public class Question implements Serializable {
 
     @ManyToMany(mappedBy = "questions")
     private List<Quiz> quizzes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports = new ArrayList<>();
 
     // Constructors
 
@@ -85,7 +89,12 @@ public class Question implements Serializable {
         return this.quizzes;
     }
 
+    public List<Report> getReports() {
+        return this.reports;
+    }
+
     // Setter methods
+    
     public void setQuestion(String question) {
         this.question = question;
     }

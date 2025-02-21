@@ -15,10 +15,15 @@ import user.CurrentUser;
 @Named
 @ViewScoped
 public class StatisticsController implements Serializable {
+
     private Long totalGamesPlayed;
+
     private Long totalQuestionsAnswered;
+
     private Long totalCorrectAnswers;
+
     private double averageCorrectAnswers;
+
     private Category favouriteCategory;
 
     @Inject
@@ -32,16 +37,7 @@ public class StatisticsController implements Serializable {
         loadStatistics();
     }
 
-    public void loadStatistics() {
-        int userID = currentUser.getUser().getUserID();
-        this.totalGamesPlayed = scoreDAO.getScoreCountForUser(userID);
-        this.totalQuestionsAnswered = this.totalGamesPlayed * 10;
-        this.totalCorrectAnswers = scoreDAO.getTotalScoreForUser(userID);
-        this.averageCorrectAnswers = (totalGamesPlayed == 0) ? 0.0 : new BigDecimal((double) totalCorrectAnswers / totalGamesPlayed)
-            .setScale(2, RoundingMode.HALF_UP)
-            .doubleValue();
-        this.favouriteCategory = scoreDAO.getMostPlayedCategoryForUser(userID);
-    }
+    //Getter
 
     public Long getTotalGamesPlayed() {
         return this.totalGamesPlayed;
@@ -61,5 +57,19 @@ public class StatisticsController implements Serializable {
 
     public Category getFavouriteCategory() {
         return this.favouriteCategory;
+    }
+
+    //Other
+    
+    //Loads all statistics
+    public void loadStatistics() {
+        int userID = currentUser.getUser().getUserID();
+        this.totalGamesPlayed = scoreDAO.getScoreCountForUser(userID);
+        this.totalQuestionsAnswered = this.totalGamesPlayed * 10;
+        this.totalCorrectAnswers = scoreDAO.getTotalScoreForUser(userID);
+        this.averageCorrectAnswers = (totalGamesPlayed == 0) ? 0.0 : new BigDecimal((double) totalCorrectAnswers / totalGamesPlayed)
+            .setScale(2, RoundingMode.HALF_UP)
+            .doubleValue();
+        this.favouriteCategory = scoreDAO.getMostPlayedCategoryForUser(userID);
     }
 }

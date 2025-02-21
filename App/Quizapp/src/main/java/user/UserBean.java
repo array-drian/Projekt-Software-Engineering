@@ -1,6 +1,8 @@
 package user;
 import java.io.Serializable;
 
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -11,7 +13,9 @@ import other.App;
 public class UserBean implements Serializable{
 
     private String userName;
+
     private String userPass;
+
     private boolean isMod = false;
 
     @Inject
@@ -24,6 +28,7 @@ public class UserBean implements Serializable{
     private App app;
 
     //Getter
+
     public String getUserName() {
         return this.userName;
     }
@@ -51,9 +56,14 @@ public class UserBean implements Serializable{
     }
 
     //Other
+    
+    //Save the current user to the Database
     public void saveToDatabase() {
         String hashedPass = app.hashPassword(userName, userPass, loginController.getSalt());
         User newUser = new User(userName, hashedPass, isMod);
         userDAO.persist(newUser);
+
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Dein Konto wurde erstellt.", null);
+        FacesContext.getCurrentInstance().addMessage("registrationForm", msg);
     }
 }

@@ -9,7 +9,6 @@ import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.NoResultException;
 
 @Named
 @ApplicationScoped
@@ -27,72 +26,79 @@ public class UserDAO {
 
     @PreDestroy
     public void cleanup() {
-        if (this.entityManager.isOpen()) {
+        if(this.entityManager.isOpen()) {
             this.entityManager.close();
         }
     }
 
+    //Get the Entity with userId = userId
     public User getUserAtIndex(int userId) {
-        return entityManager.createQuery("SELECT u FROM User u WHERE u.userID = :userId", User.class)
-                        .setParameter("userId", userId)
-                        .getSingleResult();
+        return entityManager.createQuery(
+            "SELECT u FROM User u " +
+            "WHERE u.userID = :userId", User.class)
+            .setParameter("userId", userId)
+            .getSingleResult();
     }
 
+    //Get the Entity with userId = userId and userPass = userPass
+    public User getUserByNameAndPassword(String userName, String userPass) {
+        return entityManager.createQuery(
+            "SELECT u FROM User u " +
+            "WHERE u.userName = :userName " +
+            "AND u.userPass = :userPass", User.class)
+            .setParameter("userName", userName)
+            .setParameter("userPass", userPass)
+            .getSingleResult();
+    }
+
+    //Get a list of all Users
     public List<User> getAllUsers() {
-        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+        return entityManager.createQuery(
+            "SELECT u FROM User u", User.class)
+            .getResultList();
     }
 
+    //Create a transaction
     public EntityTransaction beginTransaction() {
-        if (!entityManager.getTransaction().isActive()) {
+        if(!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
         }
         return entityManager.getTransaction();
     }
-    
 
-    public User getUserByNameAndPassword(String userName, String userPass) {
-        try {
-            return entityManager.createQuery(
-                "SELECT u FROM User u WHERE u.userName = :userName AND u.userPass = :userPass", User.class)
-                .setParameter("userName", userName)
-                .setParameter("userPass", userPass)
-                .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
+    //Merge an Entity
     public User merge(User user) {
         EntityTransaction tx = beginTransaction();
         try {
-            User managedUser = entityManager.merge(user); // Store the managed instance
+            User managedUser = entityManager.merge(user);
             tx.commit();
-            return managedUser; // Return the managed entity
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+            return managedUser;
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
-
+    //Persist an Entity
     public void persist(User user) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.persist(user);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
+    //Remove an Entity
     public void remove(User user) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.remove(user);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }

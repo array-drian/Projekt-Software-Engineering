@@ -38,6 +38,9 @@ public class User implements Serializable
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Score> scores = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean isActive = true;
+
     //Constructor
 
     public User() {
@@ -80,9 +83,13 @@ public class User implements Serializable
         return this.scores;
     }
 
+    public boolean getIsActive() {
+        return this.isActive;
+    }
+
     //Setter
 
-    public void setName(String userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
@@ -92,5 +99,9 @@ public class User implements Serializable
 
     public void setIsMod(boolean isMod) {
         this.isMod = isMod;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }

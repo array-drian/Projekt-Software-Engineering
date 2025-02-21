@@ -31,5 +31,4 @@ public class CurrentUser implements Serializable {
     public boolean isValid() {
         return this.user != null;
     }
-
 }

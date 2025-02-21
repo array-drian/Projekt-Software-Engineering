@@ -40,7 +40,7 @@ public class Quiz implements Serializable {
     @OneToOne(mappedBy = "quiz", cascade = CascadeType.ALL)
     private Game match;
 
-    // Constructors
+    //Constructors
 
     public Quiz() {
     }
@@ -49,7 +49,8 @@ public class Quiz implements Serializable {
         this.category = category;
     }
 
-    // Getter methods
+    //Getter
+
     public int getQuizID() {
         return this.quizID;
     }
@@ -66,7 +67,7 @@ public class Quiz implements Serializable {
         return this.match;
     }
 
-    // Setter methods
+    //Setter
 
     public void setCategory(Category category) {
         this.category = category;

@@ -1,4 +1,4 @@
-package suggestion;
+package report;
 import java.io.Serializable;
 
 import jakarta.persistence.Column;
@@ -12,11 +12,11 @@ import question.Question;
 import user.User;
 
 @Entity
-public class Suggestion implements Serializable {
+public class Report implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int suggestionID;
+    private int reportID;
 
     @ManyToOne
     @JoinColumn(name = "questionID", nullable = false)
@@ -26,23 +26,26 @@ public class Suggestion implements Serializable {
     @JoinColumn(name = "userID", nullable = false)
     private User byUser;
 
+    private String message;
+
     @Column(nullable = false)
-    private boolean isAccepted = false;
+    private boolean isActive = true;
 
     //Constructor
 
-    public Suggestion() {
+    public Report() {
     }
 
-    public Suggestion(Question question, User byUser) {
+    public Report(Question question, User byUser, String message) {
         this.question = question;
         this.byUser = byUser;
+        this.message = message;
     }
 
     //Getter
 
-    public int getSuggestionID() {
-        return this.suggestionID;
+    public int getReportID() {
+        return this.reportID;
     }
 
     public Question getQuestion() {
@@ -53,8 +56,12 @@ public class Suggestion implements Serializable {
         return this.byUser;
     }
 
-    public boolean getIsAccepted() {
-        return this.isAccepted;
+    public String getMessage() {
+        return this.message;
+    }
+
+    public boolean getIsActive() {
+        return this.isActive;
     }
 
     //Setter
@@ -67,7 +74,11 @@ public class Suggestion implements Serializable {
         this.byUser = byUser;
     }
 
-    public void setIsAccepted(boolean isAccepted) {
-        this.isAccepted = isAccepted;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }

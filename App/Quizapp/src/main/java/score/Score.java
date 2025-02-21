@@ -28,7 +28,7 @@ public class Score implements Serializable {
 
     private int score;
 
-    // Constructors
+    //Constructors
 
     public Score() {
     }
@@ -39,7 +39,8 @@ public class Score implements Serializable {
         this.score = score;
     }
 
-    // Getter methods
+    //Getter
+
     public int getScoreID() {
         return this.scoreID;
     }
@@ -56,7 +57,7 @@ public class Score implements Serializable {
         return this.score;
     }
 
-    // Setter methods
+    //Setter
 
     public void setUser(User user) {
         this.user = user;

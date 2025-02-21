@@ -26,11 +26,12 @@ public class GameDAO {
 
     @PreDestroy
     public void cleanup() {
-        if (this.entityManager.isOpen()) {
+        if(this.entityManager.isOpen()) {
             this.entityManager.close();
         }
     }
 
+    //Get the Entity with gameID = gameID
     public Game getGameAtIndex(int gameID) {
         return entityManager.createQuery(
             "SELECT m FROM Game m " +
@@ -39,6 +40,7 @@ public class GameDAO {
             .getSingleResult();
     }
 
+    //Get all singleplayer Games with userID = userID
     public List<Game> getPendingSingleplayerGamesForUser(int userID) {
         return entityManager.createQuery(
             "SELECT g FROM Game g JOIN g.users u " +
@@ -49,6 +51,7 @@ public class GameDAO {
             .getResultList();
     }
 
+    //Get all multiplayer Games with userID = userID
     public List<Game> getPendingMultiplayerGamesForUser(int userID) {
         return entityManager.createQuery(
             "SELECT g FROM Game g " +
@@ -65,6 +68,7 @@ public class GameDAO {
             .getResultList();
     }    
 
+    //Get all multiplayer Games with userID = userID that arent full
     public List<Game> getWaitingMultiplayerGamesForUser(int userID) {
         return entityManager.createQuery(
             "SELECT g FROM Game g JOIN g.users u " +
@@ -76,6 +80,7 @@ public class GameDAO {
             .getResultList();
     }
 
+    //Get all multiplayer Games with userID != userID that arent full
     public List<Game> getWaitingMultiplayerGamesWithoutUser(int userID) {
         return entityManager.createQuery(
             "SELECT g FROM Game g " +
@@ -87,43 +92,47 @@ public class GameDAO {
             .getResultList();
     }
     
+    //Create a transaction
     public EntityTransaction beginTransaction() {
-        if (!entityManager.getTransaction().isActive()) {
+        if(!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
         }
         return entityManager.getTransaction();
     }
 
+    //Merge an Entity
     public Game merge(Game game) {
         EntityTransaction tx = beginTransaction();
         try {
-            Game managedGame = entityManager.merge(game); // Store the managed instance
+            Game managedGame = entityManager.merge(game);
             tx.commit();
-            return managedGame; // Return the managed entity
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+            return managedGame;
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
+    //Persist an Entity
     public void persist(Game game) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.persist(game);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
+    //Remove an Entity
     public void remove(Game game) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.remove(game);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }

@@ -3,30 +3,32 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets">
-<h:head>
+  <h:head>
   <title>Modpanel</title>
-  <h:outputText value="#{loginController.checkLogin()}"/>
-  <h:outputText value="#{loginController.checkPermission()}"/>
-</h:head>
-<h:body>
-  <h2>Modpanel</h2>
-  <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
-  <h:form>
-    <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
-  </h:form>
-  <a href="#{request.contextPath}/app.xhtml">Zur App</a>
-  <h2>Neue Kategorie erstellen</h2>
-  <h:form>
-    <!-- Input fields for User details -->
-    <p><h:outputLabel for="category" value="Kategorie:" /></p>
-    <p><h:inputText id="category" value="#{categoryBean.category}" required="true" /></p>
+    <f:metadata>
+      <f:viewAction action="#{checkerController.checkLoginAndPermission()}" />
+    </f:metadata>
+  </h:head>
+  <h:body>
+    <h2>Modpanel</h2>
+    <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
+    <h:form>
+      <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
+    </h:form>
+    <a href="#{request.contextPath}/app.xhtml">Zur App</a>
+    <h2>Neue Kategorie erstellen</h2>
+    <h:form id="createCategoryForm">
+      <p><h:outputLabel for="category" value="Kategorie:" /></p>
+      <p><h:inputText id="category" value="#{categoryBean.category}" required="true" /></p>
     
-    <!-- Command button to trigger the save action -->
-    <p><h:commandButton value="Kategorie erstellen" action="#{categoryBean.saveToDatabase}" /></p>
-  </h:form>
-  <h:form>
-    <h:messages globalOnly="true" style="color:red;" />
-    <h:panelGrid columns="2">
+      <p><h:commandButton value="Kategorie erstellen" action="#{categoryBean.saveToDatabase}" /></p>
+      <h:messages for="createCategoryForm" layout="table" />
+    </h:form>
+
+    <h2>Neue Frage erstellen</h2>
+
+    <h:form id="createQuestionsForm">
+      <h:panelGrid columns="2">
         <h:outputLabel for="question" value="Frage:" />
         <h:inputText id="question" value="#{questionBean.question}" required="true"/>
 
@@ -44,30 +46,89 @@
         </ui:repeat>
 
         <h:commandButton value="Frage einreichen" action="#{questionBean.createQuestion}" />
-    </h:panelGrid>
-  </h:form>
-  <h2>Ausstehende Vorschläge</h2>
+      </h:panelGrid>
+      <h:messages for="createQuestionsForm" layout="table" />
+    </h:form>
+    <h2>Ausstehende Vorschläge</h2>
   
-  <h:form>
-    <!-- Display the current suggestion's question -->
-    <h:outputText value="#{suggestionController.getSuggestion().question.question}" />
+    <h:form id="suggestionsForm">
+      <h:outputText value="#{suggestionController.getSuggestion().question.question}" />
 
-    <ui:repeat value="#{suggestionController.getSuggestion().question.getAnswers()}" var="answer">
-      <h:outputText value="#{answer.answer}" />
-    </ui:repeat>
+      <ui:repeat value="#{suggestionController.getSuggestion().question.getAnswers()}" var="answer">
+        <h:outputText value="#{answer.answer}" />
+      </ui:repeat>
 
+      <h:commandButton value="Akzeptieren" action="#{suggestionController.acceptSuggestion}"></h:commandButton>
+      <h:commandButton value="Ablehnen" action="#{suggestionController.declineSuggestion}"></h:commandButton>
 
-    <!-- Buttons to accept or decline the suggestion -->
-    <h:commandButton value="Akzeptieren" action="#{suggestionController.acceptSuggestion}"></h:commandButton>
-    <h:commandButton value="Ablehnen" action="#{suggestionController.declineSuggestion}"></h:commandButton>
+      <h:commandButton value="Zurück" action="#{suggestionController.previousSuggestion}" disabled="#{suggestionController.index == 0}" />
+      <h:commandButton value="Vor" action="#{suggestionController.nextSuggestion}" disabled="#{suggestionController.index == suggestionController.maxIndex}" />
 
-    <!-- Navigation buttons -->
-    <h:commandButton value="Zurück" action="#{suggestionController.previousSuggestion}" disabled="#{suggestionController.index == 0}" />
-    <h:commandButton value="Vor" action="#{suggestionController.nextSuggestion}" disabled="#{suggestionController.index == suggestionController.maxIndex}" />
+      <h:outputText value="#{suggestionController.getIndex() + 1} / #{suggestionController.getMaxIndex() + 1}" />
+      <h:messages for="suggestionsForm" layout="table" />
+    </h:form>
 
-    <!-- Display current index out of total -->
-    <h:outputText value="#{suggestionController.getIndex() + 1} / #{suggestionController.getMaxIndex() + 1}" />
-</h:form>
+    <h2>Ausstehende Reports</h2>
+  
+    <h:form id="reportsForm">
+      <h:outputLabel for="questionInput" value="Frage: " />
+      <h:inputText id="questionInput" value="#{reportController.report.question.question}" />
 
-</h:body>
+      <ui:repeat value="#{reportController.report.question.answers}" var="answer" varStatus="status">
+        <h:outputLabel for="answerInput#{status.index}" value="Antwort #{status.index + 1}: " />
+        <h:inputText id="answerInput#{status.index}" value="#{answer.answer}" />
+      </ui:repeat>
+
+      <h:outputText value="Nachricht des Nutzers: #{reportController.report.message}" />
+
+      <h:commandButton value="Änderungen speichern" action="#{reportController.changeQuestion}">
+        <f:ajax execute="@form" render="@form" />
+      </h:commandButton>
+
+      <h:commandButton value="Ablehnen" action="#{reportController.settleReport}">
+        <f:ajax execute="@form" render="@form" />
+      </h:commandButton>
+
+      <h:commandButton value="Zurück" action="#{reportController.previousSuggestion}" disabled="#{reportController.index == 0}">
+        <f:ajax execute="@form" render="@form" />
+      </h:commandButton>
+
+      <h:commandButton value="Vor" action="#{reportController.nextSuggestion}" disabled="#{reportController.index == reportController.maxIndex}">
+        <f:ajax execute="@form" render="@form" />
+      </h:commandButton>
+
+      <h:outputText value="#{reportController.index + 1} / #{reportController.maxIndex + 1}" />
+      <h:messages for="reportsForm" layout="table" />
+    </h:form>
+
+    <h2>Fragenbestand bearbeiten</h2>
+
+    <h:form id="editQuestionsForm">
+      <h:dataTable value="#{questionController.allQuestions}" var="question">
+        <h:column>
+          <f:facet name="header">Frage</f:facet>
+          <h:inputText value="#{question.question}" />
+        </h:column>
+        
+        <h:column>
+          <f:facet name="header">Richtige Antwort</f:facet>
+          <h:inputText value="#{question.answers[0].answer}" />
+        </h:column>
+        
+        <h:column>
+          <f:facet name="header">Weitere Falsche Antworten</f:facet>
+          <h:inputText value="#{question.answers[1].answer}" />
+          <h:inputText value="#{question.answers[2].answer}" />
+          <h:inputText value="#{question.answers[3].answer}" />
+        </h:column>
+
+        <h:column>
+          <f:facet name="header">Änderungen speichern</f:facet>
+          <h:commandButton value="Save" action="#{questionController.changeQuestion(question)}" />
+        </h:column>
+        
+      </h:dataTable>
+      <h:messages for="editQuestionsForm" layout="table" />
+    </h:form>
+  </h:body>
 </html>

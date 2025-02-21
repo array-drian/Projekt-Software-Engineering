@@ -1,4 +1,6 @@
-package answer;
+package report;
+import java.util.List;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,7 +12,7 @@ import jakarta.persistence.EntityTransaction;
 
 @Named
 @ApplicationScoped
-public class AnswerDAO {
+public class ReportDAO {
 
     @Inject
     private EntityManagerFactory emf;
@@ -29,13 +31,21 @@ public class AnswerDAO {
         }
     }
 
-    //Get the Entity with answerID = answerID
-    public Answer getAnswerAtIndex(int answerID) {
+    //Get the Entity with reportID = reportID
+    public Report getReportAtIndex(int reportID) {
         return entityManager.createQuery(
-            "SELECT a FROM Answer a " +
-            "WHERE a.answerID = :answerID", Answer.class)
-            .setParameter("answerID", answerID)
+            "SELECT r FROM Report r " +
+            "WHERE r.reportID = :reportID", Report.class)
+            .setParameter("reportID", reportID)
             .getSingleResult();
+    }
+    
+    //Get a list of all pending Reports
+    public List<Report> getPendingReports() {
+        return entityManager.createQuery(
+            "SELECT r FROM Report r " +
+            "WHERE r.isActive = true", Report.class)
+            .getResultList();
     }
 
     //Create a transaction
@@ -47,12 +57,12 @@ public class AnswerDAO {
     }
 
     //Merge an Entity
-    public Answer merge(Answer answer) {
+    public Report merge(Report report) {
         EntityTransaction tx = beginTransaction();
         try {
-            Answer managedAnswer = entityManager.merge(answer);
+            Report managedReport = entityManager.merge(report); // Store the managed instance
             tx.commit();
-            return managedAnswer;
+            return managedReport; // Return the managed entity
         }catch(RuntimeException e) {
             if(tx.isActive()) tx.rollback();
             throw e;
@@ -60,10 +70,10 @@ public class AnswerDAO {
     }
 
     //Persist an Entity
-    public void persist(Answer answer) {
+    public void persist(Report report) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.persist(answer);
+            entityManager.persist(report);
             tx.commit();
         }catch(RuntimeException e) {
             if(tx.isActive()) tx.rollback();
@@ -72,10 +82,10 @@ public class AnswerDAO {
     }
 
     //Remove an Entity
-    public void remove(Answer answer) {
+    public void remove(Report report) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.remove(answer);
+            entityManager.remove(report);
             tx.commit();
         }catch(RuntimeException e) {
             if(tx.isActive()) tx.rollback();

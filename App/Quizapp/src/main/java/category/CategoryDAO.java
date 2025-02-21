@@ -26,63 +26,68 @@ public class CategoryDAO {
 
     @PreDestroy
     public void cleanup() {
-        if (this.entityManager.isOpen()) {
+        if(this.entityManager.isOpen()) {
             this.entityManager.close();
         }
     }
 
+    //Get the Entity with categoryID = categoryID
     public Category getCategoryAtIndex(int categoryID) {
-        return entityManager.createQuery("SELECT c FROM Category c WHERE c.categoryID = :categoryID", Category.class)
-                        .setParameter("categoryID", categoryID)
-                        .getSingleResult();
+        return entityManager.createQuery(
+            "SELECT c FROM Category c " +
+            "WHERE c.categoryID = :categoryID", Category.class)
+            .setParameter("categoryID", categoryID)
+            .getSingleResult();
     }
 
+    //Get all Entities from Category
     public List<Category> getAllCategorys() {
-        return entityManager.createQuery("SELECT c FROM Category c", Category.class).getResultList();
+        return entityManager.createQuery(
+            "SELECT c FROM Category c", Category.class)
+            .getResultList();
     }
 
+    //Create a transaction
     public EntityTransaction beginTransaction() {
-        if (!entityManager.getTransaction().isActive()) {
+        if(!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
         }
         return entityManager.getTransaction();
     }
     
-
+    //Merge an Entity
     public void merge(Category category) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.merge(category);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
+    //Persist an Entity
     public void persist(Category category) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.persist(category);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
+    //Remove an Entity
     public void remove(Category category) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.remove(category);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
-    }
-
-    public void saveUser(Category category) {
-        persist(category);
     }
 }

@@ -29,18 +29,21 @@ public class ScoreDAO {
 
     @PreDestroy
     public void cleanup() {
-        if (this.entityManager.isOpen()) {
+        if(this.entityManager.isOpen()) {
             this.entityManager.close();
         }
     }
 
+    //Get the Entity with scoreID = scoreID
     public Score getScoreAtIndex(int scoreID) {
-        return entityManager.createQuery("SELECT s FROM Score s " +
+        return entityManager.createQuery(
+            "SELECT s FROM Score s " +
             "WHERE s.scoreID = :scoreID", Score.class)
             .setParameter("scoreID", scoreID)
             .getSingleResult();
     }
 
+    //Gets the total number of scores for userID = userID
     public Long getScoreCountForUser(int userID) {
         return entityManager.createQuery(
             "SELECT COUNT(s) FROM Score s " +
@@ -50,6 +53,7 @@ public class ScoreDAO {
             .getSingleResult();
     }
     
+    //Gets the total number of scored points for userID = userID
     public Long getTotalScoreForUser(int userID) {
         return entityManager.createQuery(
             "SELECT COALESCE(SUM(s.score), 0) FROM Score s " + 
@@ -58,8 +62,32 @@ public class ScoreDAO {
             .setParameter("userID", userID)
             .getSingleResult();
     }
-    
 
+    //Get top 10 users and there amount of scores
+    public List<Object[]> getTop10UsersByScoreCount() {
+        return entityManager.createQuery(
+            "SELECT s.user.userName, COUNT(s) as scoreCount " +
+            "FROM Score s " +
+            "WHERE s.game.isFinished = true " +
+            "GROUP BY s.user.userName " +
+            "ORDER BY scoreCount DESC", Object[].class)
+            .setMaxResults(10)
+            .getResultList();
+    }
+
+    //Get top 10 users and there amount of scored points
+    public List<Object[]> getTop10UsersByTotalScore() {
+        return entityManager.createQuery(
+            "SELECT s.user.userName, COALESCE(SUM(s.score), 0) as totalScore " +
+            "FROM Score s " +
+            "WHERE s.game.isFinished = true " +
+            "GROUP BY s.user.userName " +
+            "ORDER BY totalScore DESC", Object[].class)
+            .setMaxResults(10)
+            .getResultList();
+    }
+    
+    //Gets the most player category for userID = userID
     public Category getMostPlayedCategoryForUser(int userID) {
         return entityManager.createQuery(
             "SELECT c FROM Category c " +
@@ -75,7 +103,7 @@ public class ScoreDAO {
             .getSingleResult();
     }
 
-
+    //Gets all finished Singeleplayer games for userID = userID
     public List<Game> getFinishedSingleplayerGamesForUser(int userID) {
         return entityManager.createQuery(
             "SELECT g FROM Game g " +
@@ -87,6 +115,7 @@ public class ScoreDAO {
             .getResultList();
     }
 
+    //Gets all finished Multiplayer games for userID = userID
     public List<Game> getFinishedMuliplayerGamesForUser(int userID) {
         return entityManager.createQuery(
             "SELECT g FROM Game g " +
@@ -98,6 +127,7 @@ public class ScoreDAO {
             .getResultList();
     }
 
+    //Gets all played but infinished Multiplayer games for userID = userID
     public List<Game> getPlayedButUnfinishedMuliplayerGamesForUser(int userID) {
         return entityManager.createQuery(
             "SELECT g FROM Game g " +
@@ -114,43 +144,47 @@ public class ScoreDAO {
             .getResultList();
     }
 
+    //Create a transaction
     public EntityTransaction beginTransaction() {
-        if (!entityManager.getTransaction().isActive()) {
+        if(!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
         }
         return entityManager.getTransaction();
     }
 
+    //Merge an Entity
     public Score merge(Score score) {
         EntityTransaction tx = beginTransaction();
         try {
-            Score managedScore = entityManager.merge(score); // Store the managed instance
+            Score managedScore = entityManager.merge(score);
             tx.commit();
-            return managedScore; // Return the managed entity
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+            return managedScore;
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
+    //Persist an Entity
     public void persist(Score score) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.persist(score);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
+    //Remove an Entity
     public void remove(Score score) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.remove(score);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }

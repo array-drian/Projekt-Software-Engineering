@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -15,9 +16,13 @@ import user.CurrentUser;
 @Named
 @ViewScoped
 public class GameController implements Serializable {
+
     private List<Game> pendingSingleplayerGames;
+
     private List<Game> pendingMultiplayerGames;
+
     private List<Game> waitingMultiplayerGamesWithoutUser;
+
     private List<Game> waitingMultiplayerGamesForUser;
 
     @Inject
@@ -37,18 +42,7 @@ public class GameController implements Serializable {
         loadGames();
     }
 
-    public void loadGames() {
-        int userID = currentUser.getUser().getUserID();
-        this.pendingSingleplayerGames = gameDAO.getPendingSingleplayerGamesForUser(userID);
-        this.pendingMultiplayerGames = gameDAO.getPendingMultiplayerGamesForUser(userID);
-        this.waitingMultiplayerGamesWithoutUser = gameDAO.getWaitingMultiplayerGamesWithoutUser(userID);
-        this.waitingMultiplayerGamesForUser = gameDAO.getWaitingMultiplayerGamesForUser(userID);
-    }
-
-    public void createGame() {
-        quizBean.createQuiz();
-        loadGames();
-    }
+    //Getter
 
     public List<Game> getPendingSingleplayerGames() {
         return this.pendingSingleplayerGames;
@@ -66,14 +60,24 @@ public class GameController implements Serializable {
         return this.waitingMultiplayerGamesForUser;
     }
 
-    public void checkGame() {
-        if(!currentGame.isValid()) {
-            FacesContext fc = FacesContext.getCurrentInstance();
-            NavigationHandler nh = fc.getApplication().getNavigationHandler();
-            nh.handleNavigation(fc, null, "quiz.xhtml?faces-redirect=true");
-        }
+    //Other
+
+    //Fill all Lists with Data fomr the Database
+    public void loadGames() {
+        int userID = currentUser.getUser().getUserID();
+        this.pendingSingleplayerGames = gameDAO.getPendingSingleplayerGamesForUser(userID);
+        this.pendingMultiplayerGames = gameDAO.getPendingMultiplayerGamesForUser(userID);
+        this.waitingMultiplayerGamesWithoutUser = gameDAO.getWaitingMultiplayerGamesWithoutUser(userID);
+        this.waitingMultiplayerGamesForUser = gameDAO.getWaitingMultiplayerGamesForUser(userID);
     }
 
+    //Create a quiz
+    public void createGame() {
+        quizBean.createQuiz();
+        loadGames();
+    }
+
+    //Play a Game
     public void playGame(Game game) {
         if(game != null) {
             this.currentGame.setGame(game);
@@ -83,10 +87,14 @@ public class GameController implements Serializable {
         }
     }
 
+    //Join a multiplayer Game
     public void joinGame(Game game) {
         if(game != null) {
             game.getUsers().add(currentUser.getUser());
             gameDAO.persist(game);
+
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Du bist dem Spiel beigetreten.", null);
+            FacesContext.getCurrentInstance().addMessage("joinGameForm", msg);
 
             loadGames();
         }

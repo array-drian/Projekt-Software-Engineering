@@ -24,54 +24,61 @@ public class QuizDAO {
 
     @PreDestroy
     public void cleanup() {
-        if (this.entityManager.isOpen()) {
+        if(this.entityManager.isOpen()) {
             this.entityManager.close();
         }
     }
 
+    //Get the Entity with quizID = quizID
     public Quiz getQuizAtIndex(int quizID) {
-        return entityManager.createQuery("SELECT q FROM Quiz q WHERE q.quizID = :quizID", Quiz.class)
-                        .setParameter("quizID", quizID)
-                        .getSingleResult();
+        return entityManager.createQuery(
+            "SELECT q FROM Quiz q " +
+            "WHERE q.quizID = :quizID", Quiz.class)
+            .setParameter("quizID", quizID)
+            .getSingleResult();
     }
 
+    //Create a transaction
     public EntityTransaction beginTransaction() {
-        if (!entityManager.getTransaction().isActive()) {
+        if(!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
         }
         return entityManager.getTransaction();
     }
 
+    //Merge an Entity
     public Quiz merge(Quiz quiz) {
         EntityTransaction tx = beginTransaction();
         try {
-            Quiz managedQuiz = entityManager.merge(quiz); // Store the managed instance
+            Quiz managedQuiz = entityManager.merge(quiz);
             tx.commit();
-            return managedQuiz; // Return the managed entity
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+            return managedQuiz;
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
+    //Persist an Entity
     public void persist(Quiz quiz) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.persist(quiz);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }
 
+    //Remove an Entity
     public void remove(Quiz quiz) {
         EntityTransaction tx = beginTransaction();
         try {
             entityManager.remove(quiz);
             tx.commit();
-        } catch (RuntimeException e) {
-            if (tx.isActive()) tx.rollback();
+        }catch(RuntimeException e) {
+            if(tx.isActive()) tx.rollback();
             throw e;
         }
     }

@@ -11,8 +11,8 @@ import jakarta.persistence.ManyToOne;
 import question.Question;
 
 @Entity
-public class Answer implements Serializable
-{
+public class Answer implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int answerID;
@@ -42,7 +42,7 @@ public class Answer implements Serializable
         this.isCorrect = isCorrect;
     }
 
-    // Getter
+    //Getter
 
     public int getAnswerID() {
         return this.answerID;

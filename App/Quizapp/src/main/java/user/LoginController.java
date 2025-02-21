@@ -2,7 +2,6 @@ package user;
 import java.io.Serializable;
 
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
@@ -26,7 +25,9 @@ public class LoginController implements Serializable {
     private static final String salt = "H7sk6V725NVxqDq05DVnraZV";
 
     private String userName;
+
     private String userPass;
+
     private String tempUsername;
 
     //Getter
@@ -55,45 +56,35 @@ public class LoginController implements Serializable {
 
     //Other
 
-    public void checkLogin() {
-        if(!currentUser.isValid()) {
-            FacesContext fc = FacesContext.getCurrentInstance();
-            NavigationHandler nh = fc.getApplication().getNavigationHandler();
-            nh.handleNavigation(fc, null, "index.xhtml?faces-redirect=true");
-        }
-    }
-
-    public void checkPermission() {
-        if(currentUser.isValid() && !currentUser.getUser().getIsMod()) {
-            FacesContext fc = FacesContext.getCurrentInstance();
-            NavigationHandler nh = fc.getApplication().getNavigationHandler();
-            nh.handleNavigation(fc, null, "app.xhtml?faces-redirect=true");
-        }
-    }
-
+    //Logout a user
     public String logout() {
         currentUser.reset();
         return "index.xhtml?faces-redirect=true";
     }
 
+    //Validate the Username
     public void postValidateUser(ComponentSystemEvent ev) {
         UIInput temp = (UIInput) ev.getComponent();
         this.tempUsername = (String) temp.getValue();
     }
 
+    //Validate Username and Password
     public void validateLogin(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         String password = (String) value;
         app.validateUsernameAndPassword(currentUser, tempUsername, password, salt);
-        if (!currentUser.isValid())
-            throw new ValidatorException(new FacesMessage("Login falsch!"));
+        if(!currentUser.isValid()) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login falsch.", "Benutzername oder Passwort ist ungültig.");
+            throw new ValidatorException(message);
+        }
     }
 
+    //Login user
     public String login() {
-        if (currentUser.getUser().getIsMod()) {
+        if(currentUser.getUser().getIsMod()) {
             return "modpanel.xhtml?faces-redirect=true";
-        } else if (!currentUser.getUser().getIsMod()) {
+        }else if(!currentUser.getUser().getIsMod()) {
             return "app.xhtml?faces-redirect=true";
-        } else {
+        }else {
             return "";
         }
     }
