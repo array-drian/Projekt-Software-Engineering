@@ -6,6 +6,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
 
 @Named("categoryConverter")
 @ApplicationScoped
@@ -16,6 +17,7 @@ public class CategoryConverter implements Converter<Category> {
 
     //Convert a String to an Object
     @Override
+    @Transactional
     public Category getAsObject(FacesContext context, UIComponent component, String value) {
         if(value == null || value.trim().isEmpty()) {
             return null;

@@ -12,6 +12,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import question.Question;
+import question.QuestionController;
 import question.QuestionDAO;
 
 @Named
@@ -32,6 +33,9 @@ public class SuggestionController implements Serializable {
 
     @Inject
     private CategoryDAO categoryDAO;
+
+    @Inject
+    private QuestionController questionController;
 
     @PostConstruct
     public void init() {
@@ -76,17 +80,22 @@ public class SuggestionController implements Serializable {
         }
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Der Vorschlag wurde akzeptiert.", null);
         FacesContext.getCurrentInstance().addMessage("suggestionsForm", msg);
+        
+        questionController.loadQuestions();
+
         acceptedOrDeclined();
     }
     
     //Declines a suggestion
     public void declineSuggestion() {
         if(this.suggestion != null) {
-            suggestionDAO.remove(this.suggestion);
+            Suggestion deletedSuggestion = suggestionDAO.merge(this.suggestion);
+
+            suggestionDAO.remove(deletedSuggestion);
     
             Question question = this.suggestion.getQuestion();
             if(!question.getIsActive()) {
-                Category category = question.getCategory();
+                Category category = categoryDAO.merge(question.getCategory());
                 category.getQuestions().remove(question);
                 categoryDAO.merge(category);
             }

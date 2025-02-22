@@ -28,6 +28,9 @@ public class QuestionBean implements Serializable {
     @Inject
     private CategoryDAO categoryDAO;
 
+    @Inject
+    private QuestionController questionController;
+
     //Constructor
 
     public QuestionBean() {
@@ -98,5 +101,7 @@ public class QuestionBean implements Serializable {
     
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die Frage wurde erfolgreich erstellt.", null);
         FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
+
+        questionController.loadQuestions();
     }
 }

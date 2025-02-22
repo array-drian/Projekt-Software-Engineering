@@ -3,7 +3,7 @@ import java.util.List;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
@@ -11,7 +11,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 
 @Named
-@ApplicationScoped
+@RequestScoped 
 public class CategoryDAO {
 
     @Inject
@@ -54,13 +54,14 @@ public class CategoryDAO {
         }
         return entityManager.getTransaction();
     }
-    
+
     //Merge an Entity
-    public void merge(Category category) {
+    public Category merge(Category category) {
         EntityTransaction tx = beginTransaction();
         try {
-            entityManager.merge(category);
+            Category managedCategory = entityManager.merge(category);
             tx.commit();
+            return managedCategory;
         }catch(RuntimeException e) {
             if(tx.isActive()) tx.rollback();
             throw e;

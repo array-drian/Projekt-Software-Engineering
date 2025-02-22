@@ -45,7 +45,9 @@
             <h:inputText value="#{questionBean.answers[status.index]}" required="true"/><br />
         </ui:repeat>
 
-        <h:commandButton value="Frage einreichen" action="#{questionBean.createQuestion}" />
+        <h:commandButton value="Frage einreichen" action="#{questionBean.createQuestion}">
+          <f:ajax execute="@form" render="@form questionsWrapper" />
+        </h:commandButton>
       </h:panelGrid>
       <h:messages for="createQuestionsForm" layout="table" />
     </h:form>
@@ -58,8 +60,10 @@
         <h:outputText value="#{answer.answer}" />
       </ui:repeat>
 
-      <h:commandButton value="Akzeptieren" action="#{suggestionController.acceptSuggestion}"></h:commandButton>
-      <h:commandButton value="Ablehnen" action="#{suggestionController.declineSuggestion}"></h:commandButton>
+      <h:commandButton value="Akzeptieren" action="#{suggestionController.acceptSuggestion}">
+        <f:ajax execute="@form" render="@form questionsWrapper" />
+      </h:commandButton>
+      <h:commandButton value="Ablehnen" action="#{suggestionController.declineSuggestion}" />
 
       <h:commandButton value="Zurück" action="#{suggestionController.previousSuggestion}" disabled="#{suggestionController.index == 0}" />
       <h:commandButton value="Vor" action="#{suggestionController.nextSuggestion}" disabled="#{suggestionController.index == suggestionController.maxIndex}" />
@@ -82,7 +86,7 @@
       <h:outputText value="Nachricht des Nutzers: #{reportController.report.message}" />
 
       <h:commandButton value="Änderungen speichern" action="#{reportController.changeQuestion}">
-        <f:ajax execute="@form" render="@form" />
+        <f:ajax execute="@form" render="@form questionsWrapper" />
       </h:commandButton>
 
       <h:commandButton value="Ablehnen" action="#{reportController.settleReport}">
@@ -101,34 +105,36 @@
       <h:messages for="reportsForm" layout="table" />
     </h:form>
 
-    <h2>Fragenbestand bearbeiten</h2>
+    <h:panelGroup id="questionsWrapper">
+      <h2>Fragenbestand bearbeiten</h2>
 
-    <h:form id="editQuestionsForm">
-      <h:dataTable value="#{questionController.allQuestions}" var="question">
-        <h:column>
-          <f:facet name="header">Frage</f:facet>
-          <h:inputText value="#{question.question}" />
-        </h:column>
-        
-        <h:column>
-          <f:facet name="header">Richtige Antwort</f:facet>
-          <h:inputText value="#{question.answers[0].answer}" />
-        </h:column>
-        
-        <h:column>
-          <f:facet name="header">Weitere Falsche Antworten</f:facet>
-          <h:inputText value="#{question.answers[1].answer}" />
-          <h:inputText value="#{question.answers[2].answer}" />
-          <h:inputText value="#{question.answers[3].answer}" />
-        </h:column>
-
-        <h:column>
-          <f:facet name="header">Änderungen speichern</f:facet>
-          <h:commandButton value="Save" action="#{questionController.changeQuestion(question)}" />
-        </h:column>
-        
-      </h:dataTable>
-      <h:messages for="editQuestionsForm" layout="table" />
-    </h:form>
+      <h:form id="editQuestionsForm">
+        <h:dataTable value="#{questionController.allQuestions}" var="question">
+          <h:column>
+            <f:facet name="header">Frage</f:facet>
+            <h:inputText value="#{question.question}" />
+          </h:column>
+          
+          <h:column>
+            <f:facet name="header">Richtige Antwort</f:facet>
+            <h:inputText value="#{question.answers[0].answer}" />
+          </h:column>
+          
+          <h:column>
+            <f:facet name="header">Weitere Falsche Antworten</f:facet>
+            <h:inputText value="#{question.answers[1].answer}" />
+            <h:inputText value="#{question.answers[2].answer}" />
+            <h:inputText value="#{question.answers[3].answer}" />
+          </h:column>
+  
+          <h:column>
+            <f:facet name="header">Änderungen speichern</f:facet>
+            <h:commandButton value="Save" action="#{questionController.changeQuestion(question)}" />
+          </h:column>
+          
+        </h:dataTable>
+        <h:messages for="editQuestionsForm" layout="table" />
+      </h:form>
+    </h:panelGroup>
   </h:body>
 </html>

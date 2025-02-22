@@ -4,7 +4,7 @@ import java.util.List;
 import answer.Answer;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 
 @Named
-@ApplicationScoped
+@RequestScoped 
 public class QuestionDAO {
 
     @Inject
@@ -44,7 +44,8 @@ public class QuestionDAO {
     //Get all Question entities
     public List<Question> getAllQuestions() {
         return entityManager.createQuery(
-            "SELECT q FROM Question q", Question.class)
+            "SELECT q FROM Question q " +
+            "WHERE q.isActive = true", Question.class)
             .getResultList();
     }
 

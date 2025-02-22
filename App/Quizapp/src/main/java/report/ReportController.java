@@ -10,6 +10,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import question.Question;
+import question.QuestionController;
 import question.QuestionDAO;
 
 @Named
@@ -27,6 +28,9 @@ public class ReportController implements Serializable {
 
     @Inject
     private QuestionDAO questionDAO;
+
+    @Inject
+    private QuestionController questionController;
 
     @PostConstruct
     public void init() {
@@ -67,6 +71,8 @@ public class ReportController implements Serializable {
 
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die Frage wurde erfolgreich bearbeitet.", null);
         FacesContext.getCurrentInstance().addMessage("reportsForm", msg);
+
+        questionController.loadQuestions();
 
         settleReport();
     }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import answer.Answer;
 import game.CurrentGame;
+import game.Game;
 import game.GameDAO;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -165,6 +166,7 @@ public class QuizController implements Serializable {
     public void endGame(){
         Score newScore = new Score(currentUser.getUser(), currentGame.getGame(), score);
         currentUser.getUser().getScores().add(newScore);
+
         currentGame.getGame().getScores().add(newScore);
         if(!currentGame.getGame().isMultiplayer()) {
             currentGame.getGame().setIsFinished(true);
@@ -174,8 +176,9 @@ public class QuizController implements Serializable {
             }
         }
         
+        Game updatedGame = gameDAO.merge(currentGame.getGame());
 
-        gameDAO.persist(currentGame.getGame());
+        gameDAO.persist(updatedGame);
 
         currentGame.reset();
 
