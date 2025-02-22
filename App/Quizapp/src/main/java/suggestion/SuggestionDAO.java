@@ -9,6 +9,7 @@ import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 
 @Named
 @RequestScoped 
@@ -33,11 +34,15 @@ public class SuggestionDAO {
 
     //Get the Entity with suggestionID = suggestionID
     public Suggestion getSuggestionAtIndex(int suggestionID) {
-        return entityManager.createQuery(
-            "SELECT s FROM Suggestion s " +
-            "WHERE s.suggestionID = :suggestionID", Suggestion.class)
-            .setParameter("suggestionID", suggestionID)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery(
+                "SELECT s FROM Suggestion s " +
+                "WHERE s.suggestionID = :suggestionID", Suggestion.class)
+                .setParameter("suggestionID", suggestionID)
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
     }
     
     //Get all pending suggestions

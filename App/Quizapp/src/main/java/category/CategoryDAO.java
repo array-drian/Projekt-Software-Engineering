@@ -9,6 +9,7 @@ import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 
 @Named
 @RequestScoped 
@@ -33,11 +34,15 @@ public class CategoryDAO {
 
     //Get the Entity with categoryID = categoryID
     public Category getCategoryAtIndex(int categoryID) {
-        return entityManager.createQuery(
-            "SELECT c FROM Category c " +
-            "WHERE c.categoryID = :categoryID", Category.class)
-            .setParameter("categoryID", categoryID)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery(
+                "SELECT c FROM Category c " +
+                "WHERE c.categoryID = :categoryID", Category.class)
+                .setParameter("categoryID", categoryID)
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
     }
 
     //Get all Entities from Category

@@ -18,21 +18,36 @@
     
   <build>
     <plugins>
-      <plugin>
+        <!-- Compiler Plugin -->
+        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <release>21</release> <!-- Updated to 21 -->
+            <release>21</release>
         </configuration>
-      </plugin>
-      <plugin>
+        </plugin>
+
+        <!-- WAR Plugin Configuration -->
+        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.3.1</version>
-      </plugin>
+        <configuration>
+            <!-- Include the resources directory -->
+            <webResources>
+            <resource>
+                <directory>src/main</directory>
+                <includes>
+                  <include>resources/css/</include> <!-- Include the resources folder -->
+                </includes>
+            </resource>
+            </webResources>
+        </configuration>
+        </plugin>
     </plugins>
-  </build>
+    </build>
+
 
   <dependencies>
     <!-- Jakarta Servlet API -->

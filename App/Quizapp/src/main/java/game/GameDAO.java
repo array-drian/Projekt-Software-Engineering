@@ -9,6 +9,7 @@ import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 
 @Named
 @RequestScoped 
@@ -33,11 +34,15 @@ public class GameDAO {
 
     //Get the Entity with gameID = gameID
     public Game getGameAtIndex(int gameID) {
-        return entityManager.createQuery(
-            "SELECT m FROM Game m " +
-            "WHERE m.gameID = :gameID", Game.class)
-            .setParameter("gameID", gameID)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery(
+                "SELECT m FROM Game m " +
+                "WHERE m.gameID = :gameID", Game.class)
+                .setParameter("gameID", gameID)
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
     }
 
     //Get all singleplayer Games with userID = userID

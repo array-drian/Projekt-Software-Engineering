@@ -9,6 +9,7 @@ import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 
 @Named
 @RequestScoped 
@@ -33,11 +34,15 @@ public class ReportDAO {
 
     //Get the Entity with reportID = reportID
     public Report getReportAtIndex(int reportID) {
-        return entityManager.createQuery(
-            "SELECT r FROM Report r " +
-            "WHERE r.reportID = :reportID", Report.class)
-            .setParameter("reportID", reportID)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery(
+                "SELECT r FROM Report r " +
+                "WHERE r.reportID = :reportID", Report.class)
+                .setParameter("reportID", reportID)
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
     }
     
     //Get a list of all pending Reports

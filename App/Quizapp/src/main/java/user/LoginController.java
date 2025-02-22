@@ -30,6 +30,8 @@ public class LoginController implements Serializable {
 
     private String tempUsername;
 
+    private boolean login = false;
+
     //Getter
 
     public String getUserName() {
@@ -44,6 +46,10 @@ public class LoginController implements Serializable {
         return this.salt;
     }
 
+    public boolean getLogin() {
+        return this.login;
+    }
+
     //Setter
 
     public void setUserName(String userName) {
@@ -52,6 +58,10 @@ public class LoginController implements Serializable {
 
     public void setUserPass(String userPass) {
         this.userPass = userPass;
+    }
+
+    public void setLogin(boolean login) {
+        this.login = login;
     }
 
     //Other

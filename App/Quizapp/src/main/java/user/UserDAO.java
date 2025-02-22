@@ -9,6 +9,7 @@ import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 
 @Named
 @RequestScoped 
@@ -33,22 +34,30 @@ public class UserDAO {
 
     //Get the Entity with userId = userId
     public User getUserAtIndex(int userId) {
-        return entityManager.createQuery(
-            "SELECT u FROM User u " +
-            "WHERE u.userID = :userId", User.class)
-            .setParameter("userId", userId)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery(
+                "SELECT u FROM User u " +
+                "WHERE u.userID = :userId", User.class)
+                .setParameter("userId", userId)
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
     }
 
     //Get the Entity with userId = userId and userPass = userPass
     public User getUserByNameAndPassword(String userName, String userPass) {
-        return entityManager.createQuery(
-            "SELECT u FROM User u " +
-            "WHERE u.userName = :userName " +
-            "AND u.userPass = :userPass", User.class)
-            .setParameter("userName", userName)
-            .setParameter("userPass", userPass)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery(
+                "SELECT u FROM User u " +
+                "WHERE u.userName = :userName " +
+                "AND u.userPass = :userPass", User.class)
+                .setParameter("userName", userName)
+                .setParameter("userPass", userPass)
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
     }
 
     //Get a list of all Users

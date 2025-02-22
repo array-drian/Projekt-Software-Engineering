@@ -8,9 +8,105 @@
         <f:metadata>
             <f:viewAction action="#{checkerController.checkLogin()}" />
         </f:metadata>
+        <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
     </h:head>
     <h:body>
-        <h2>Profil</h2>
+        <h1>Profil</h1>
+        <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
+        <h:form>
+        <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
+        </h:form>
+
+        <h2>Deine Statistiken</h2>
+        <h:panelGroup rendered="#{statisticsController.totalGamesPlayed == 0}">
+            <h3>Du hast noch nicht gespielt</h3>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{statisticsController.totalGamesPlayed != 0}">
+            <p>Du hast <h:outputText value="#{statisticsController.totalGamesPlayed}" /> Spiele abgeschlossen.</p>
+            <p>Du hast <h:outputText value="#{statisticsController.totalQuestionsAnswered}" /> Fragen beantwortet.</p>
+            <p>Du hast <h:outputText value="#{statisticsController.totalCorrectAnswers}" /> Fragen richtig beantwortet.</p>
+            <p>Du hast durchschnittlich <h:outputText value="#{statisticsController.averageCorrectAnswers}" /> Fragen pro Spiel richtig beantwortet.</p>
+            <p>Deine Lieblingskategorie ist <h:outputText value="#{statisticsController.favouriteCategory.category}" />.</p>
+        </h:panelGroup>
+
+        <h2>Abgeschlossene Spiele</h2>
+        <h:panelGroup rendered="#{empty scoreController.finishedSingleplayerGamesForUser and 
+                                  empty scoreController.finishedMultiplayerGamesForUser and 
+                                  empty scoreController.playedButUnfinishedMultiplayerGamesForUser}">
+            <h3>Du hast keine abgeschlossenen Spiele</h3>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{not empty scoreController.finishedSingleplayerGamesForUser}">
+            <h3>Einzelspieler Spiele</h3>
+
+            <h:form>
+                <h:dataTable value="#{scoreController.finishedSingleplayerGamesForUser}" var="game">
+                    <h:column>
+                        <f:facet name="header">Game ID</f:facet>
+                        <h:outputText value="#{game.gameID}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Kategorie</f:facet>
+                        <h:outputText value="#{game.quiz.category.category}" />
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Dein Score</f:facet>
+                        <h:outputText value="#{scoreController.getScoreForUserInGame(game)}" />
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{not empty scoreController.finishedMultiplayerGamesForUser or 
+                                  not empty scoreController.playedButUnfinishedMultiplayerGamesForUser}">
+            <h3>Mehrspieler Spiele</h3>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{not empty scoreController.finishedMultiplayerGamesForUser}">
+            <h4>Abgeschlossen</h4>
+
+            <h:form>
+                <h:dataTable value="#{scoreController.finishedMultiplayerGamesForUser}" var="game">
+                <h:column>
+                    <f:facet name="header">Game ID</f:facet>
+                    <h:outputText value="#{game.gameID}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Kategorie</f:facet>
+                    <h:outputText value="#{game.quiz.category.category}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Dein Score</f:facet>
+                    <h:outputText value="#{scoreController.getScoreForUserInGame(game)}" />
+                </h:column>
+                </h:dataTable>
+            </h:form>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{not empty scoreController.playedButUnfinishedMultiplayerGamesForUser}">
+            <h4>Warten auf Abschluss der anderen Spieler</h4>
+
+            <h:form>
+                <h:dataTable value="#{scoreController.playedButUnfinishedMultiplayerGamesForUser}" var="game">
+                <h:column>
+                    <f:facet name="header">Game ID</f:facet>
+                    <h:outputText value="#{game.gameID}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">Kategorie</f:facet>
+                    <h:outputText value="#{game.quiz.category.category}" />
+                </h:column>
+
+                 <h:column>
+                    <f:facet name="header">Dein Score</f:facet>
+                    <h:outputText value="#{scoreController.getScoreForUserInGame(game)}" />
+                </h:column>
+                </h:dataTable>
+            </h:form>
+        </h:panelGroup>
 
         <h2>Deine Nutzerdaten bearbeiten</h2>
 
@@ -36,5 +132,8 @@
             </h:commandButton>
             <h:messages for="editUserForm" layout="table" />
         </h:form>
+
+        <!-- Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     </h:body>
 </html>

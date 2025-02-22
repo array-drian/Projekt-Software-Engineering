@@ -7,6 +7,7 @@ import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 
 @Named
 @RequestScoped 
@@ -31,11 +32,15 @@ public class QuizDAO {
 
     //Get the Entity with quizID = quizID
     public Quiz getQuizAtIndex(int quizID) {
-        return entityManager.createQuery(
-            "SELECT q FROM Quiz q " +
-            "WHERE q.quizID = :quizID", Quiz.class)
-            .setParameter("quizID", quizID)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery(
+                "SELECT q FROM Quiz q " +
+                "WHERE q.quizID = :quizID", Quiz.class)
+                .setParameter("quizID", quizID)
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
     }
 
     //Create a transaction

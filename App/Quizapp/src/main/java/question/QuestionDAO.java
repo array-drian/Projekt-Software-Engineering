@@ -10,6 +10,7 @@ import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 
 @Named
 @RequestScoped 
@@ -34,11 +35,15 @@ public class QuestionDAO {
 
     //Get the Entity with questionID = questionID
     public Question getQuestionAtIndex(int questionID) {
-        return entityManager.createQuery(
-            "SELECT q FROM Question q " +
-            "WHERE q.questionID = :questionID", Question.class)
-            .setParameter("questionID", questionID)
-            .getSingleResult();
+        try {
+            return entityManager.createQuery(
+                "SELECT q FROM Question q " +
+                "WHERE q.questionID = :questionID", Question.class)
+                .setParameter("questionID", questionID)
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
     }
 
     //Get all Question entities

@@ -3,41 +3,46 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets">
-  <h:head>
-    <title>App</title>
-    <f:metadata>
-      <f:viewAction action="#{checkerController.checkLogin()}" />
-    </f:metadata>
-  </h:head>
-  <h:body>
-    <h2>App</h2>
-    <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
-    <h:form>
-      <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
-    </h:form>
-    <a href="#{request.contextPath}/quiz.xhtml">Zu den Quizzes</a>
-    <h2>Neue Frage einreichen</h2>
-    <h:form id="submitSuggestionForm">
-      <h:panelGrid columns="2">
-        <h:outputLabel for="question" value="Frage:" />
-        <h:inputText id="question" value="#{suggestionBean.question}" required="true"/>
+    <h:head>
+        <title>App</title>
+        <f:metadata>
+            <f:viewAction action="#{checkerController.checkLogin()}" />
+        </f:metadata>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    </h:head>
+    <h:body>
+        <h2>App</h2>
+        <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
+        <h:form>
+            <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
+        </h:form>
+        <a href="#{request.contextPath}/quiz.xhtml">Zu den Quizzes</a>
+        <h2>Neue Frage einreichen</h2>
+        <h:form id="submitSuggestionForm">
+            <h:panelGrid columns="2">
+                <h:outputLabel for="question" value="Frage:" />
+                <h:inputText id="question" value="#{suggestionBean.question}" required="true"/>
 
-        <h:outputLabel for="category" value="Kategorie:" />
-        <h:selectOneMenu id="category" value="#{suggestionBean.category}" converter="#{categoryConverter}">
-          <f:selectItems value="#{suggestionBean.allCategories}" var="cat" itemLabel="#{cat.category}" itemValue="#{cat}" />
-        </h:selectOneMenu>
+                <h:outputLabel for="category" value="Kategorie:" />
+                <h:selectOneMenu id="category" value="#{suggestionBean.category}" converter="#{categoryConverter}">
+                    <f:selectItems value="#{suggestionBean.allCategories}" var="cat" itemLabel="#{cat.category}" itemValue="#{cat}" />
+                </h:selectOneMenu>
 
-        <h:outputLabel for="correctAnswer" value="Richtige Antwort:" />
-        <h:inputText id="correctAnswer" value="#{suggestionBean.correctAnswer}" required="true"/>
+                <h:outputLabel for="correctAnswer" value="Richtige Antwort:" />
+                <h:inputText id="correctAnswer" value="#{suggestionBean.correctAnswer}" required="true"/>
 
-        <h:outputLabel value="Andere Antwortmöglichkeiten:" />
-        <ui:repeat value="#{suggestionBean.answers}" var="answer" varStatus="status">
-          <h:inputText value="#{suggestionBean.answers[status.index]}" required="true"/><br />
-        </ui:repeat>
+                <h:outputLabel value="Andere Antwortmöglichkeiten:" />
+                <ui:repeat value="#{suggestionBean.answers}" var="answer" varStatus="status">
+                    <h:inputText value="#{suggestionBean.answers[status.index]}" required="true"/><br />
+                </ui:repeat>
 
-        <h:commandButton value="Frage einreichen" action="#{suggestionBean.submitSuggestion}" />
-      </h:panelGrid>
-      <h:messages for="submitSuggestionForm" layout="table" />
-    </h:form>
-  </h:body>
+                <h:commandButton value="Frage einreichen" action="#{suggestionBean.submitSuggestion}" />
+            </h:panelGrid>
+            <h:messages for="submitSuggestionForm" layout="table" />
+        </h:form>
+
+        <!-- Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </h:body>
 </html>
