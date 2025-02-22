@@ -16,7 +16,7 @@
                     <h:panelGroup rendered="#{not loginController.login}">
                         <!-- Registration Form -->
                          <div class="col-md-12 d-flex justify-content-center align-items-center">
-                            <h:form id="registrationForm" class="w-40">
+                            <h:form id="registrationForm" class="w-35">
                                 <h2 class="text-center">Registrieren</h2>
                                 <p><h:outputLabel for="userName" value="Benutzername:" /></p>
                                 <p><h:inputText id="userName" value="#{userBean.userName}" size="40" required="true" class="form-control" /></p>
@@ -27,8 +27,8 @@
                                     <f:selectItem itemValue="#{true}" itemLabel="Ja" />
                                     <f:selectItem itemValue="#{false}" itemLabel="Nein" />
                                 </h:selectOneRadio></p>
-                                <p><h:commandButton value="Registrieren" action="#{userBean.saveToDatabase}" class="btn btn-primary w-50" /></p>
-                                <p><h:commandButton value="Zum Login" action="#{loginController.setLogin(true)}" class="btn btn-primary w-50">
+                                <p><h:commandButton value="Registrieren" action="#{userBean.saveToDatabase}" class="btn btn-primary w-35" />
+                                <h:commandButton value="Zum Login" action="#{loginController.setLogin(true)}" class="btn btn-primary w-35" style="margin-left: 25px;">
                                     <f:ajax render="loginRegistrationWrapper" />
                                 </h:commandButton></p>
                                 <h:messages for="registrationForm" layout="table" class="text-danger" />
@@ -38,7 +38,7 @@
                     <h:panelGroup rendered="#{loginController.login}">
                         <!-- Login Form -->
                         <div class="col-md-12 d-flex justify-content-center align-items-center">
-                            <h:form id="loginForm" class="w-40">
+                            <h:form id="loginForm" class="w-35">
                                 <h2 class="text-center">Anmelden</h2>
                                 <p><h:outputLabel value="Benutzername:" for="user" /></p>
                                 <p><h:inputText id="user" value="#{loginController.userName}" size="40" required="true" class="form-control">
@@ -46,8 +46,8 @@
                                 </h:inputText></p>
                                 <p><h:outputLabel value="Passwort: " for="password" /></p>
                                 <p><h:inputSecret id="password" value="#{loginController.userPass}" size="40" required="true" class="form-control" validator="#{loginController.validateLogin}" /></p>
-                                <p><h:commandButton action="#{loginController.login}" value="Anmelden" class="btn btn-primary w-50" /></p>
-                                <p><h:commandButton value="Jetzt registrieren" action="#{loginController.setLogin(false)}" class="btn btn-primary w-50">
+                                <p><h:commandButton action="#{loginController.login}" value="Anmelden" class="btn btn-primary w-35" />
+                                <h:commandButton value="Jetzt registrieren" action="#{loginController.setLogin(false)}" class="btn btn-primary w-35" style="margin-left: 25px;">
                                     <f:ajax render="loginRegistrationWrapper" />
                                 </h:commandButton></p>
                                 <h:message for="user" class="text-danger" />
