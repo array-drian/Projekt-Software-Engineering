@@ -85,6 +85,10 @@ public class Question implements Serializable {
         return this.isActive;
     }
 
+    public List<Suggestion> getSuggestions() {
+        return this.suggestions;
+    }
+
     public List<Quiz> getQuizzes() {
         return this.quizzes;
     }

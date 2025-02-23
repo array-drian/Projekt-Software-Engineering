@@ -3,7 +3,6 @@ package suggestion;
 import java.io.Serializable;
 import java.util.List;
 
-import category.Category;
 import category.CategoryDAO;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -44,6 +43,10 @@ public class SuggestionController implements Serializable {
 
     //Getter
 
+    public List<Suggestion> getPendingSuggestions(){
+        return this.pendingSuggestions;
+    }
+
     public Suggestion getSuggestion() {
         return this.suggestion;
     }
@@ -71,12 +74,13 @@ public class SuggestionController implements Serializable {
     //Accepts a Suggestion
     public void acceptSuggestion() {
         if(this.suggestion != null) {
-            this.suggestion.setIsAccepted(true);
-            suggestionDAO.merge(this.suggestion);
+            Suggestion editedSuggestion = suggestionDAO.merge(this.suggestion);
+            editedSuggestion.setIsAccepted(true);
+            suggestionDAO.persist(editedSuggestion);
 
-            Question question = suggestion.getQuestion();
-            question.setIsActive(true);
-            questionDAO.merge(question);
+            Question editedQuestion = questionDAO.merge(this.suggestion.getQuestion());
+            editedQuestion.setIsActive(true);
+            questionDAO.persist(editedQuestion);
         }
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Der Vorschlag wurde akzeptiert.", null);
         FacesContext.getCurrentInstance().addMessage("suggestionsForm", msg);
@@ -89,19 +93,13 @@ public class SuggestionController implements Serializable {
     //Declines a suggestion
     public void declineSuggestion() {
         if(this.suggestion != null) {
-            Suggestion deletedSuggestion = suggestionDAO.merge(this.suggestion);
-
-            suggestionDAO.remove(deletedSuggestion);
-    
-            Question question = this.suggestion.getQuestion();
-            if(!question.getIsActive()) {
-                Category category = categoryDAO.merge(question.getCategory());
-                category.getQuestions().remove(question);
-                categoryDAO.merge(category);
-            }
+            Suggestion editedSuggestion = suggestionDAO.merge(this.suggestion);
+            editedSuggestion.setIsDenied(true);
+            suggestionDAO.persist(editedSuggestion);
         }
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Der Vorschlag wurde abgelehnt.", null);
         FacesContext.getCurrentInstance().addMessage("suggestionsForm", msg);
+
         acceptedOrDeclined();
     }
 
@@ -113,7 +111,7 @@ public class SuggestionController implements Serializable {
             this.suggestion = this.pendingSuggestions.get(this.index);
         }else {
             this.index = 0;
-            this.suggestion = null;
+            loadSuggestions();
         }
     }
     

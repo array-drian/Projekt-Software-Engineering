@@ -39,6 +39,10 @@ public class ReportController implements Serializable {
 
     //Getter
 
+    public List<Report> getPendingReports() {
+        return this.pendingReports;
+    }
+
     public Report getReport() {
         return this.report;
     }
@@ -73,6 +77,14 @@ public class ReportController implements Serializable {
         FacesContext.getCurrentInstance().addMessage("reportsForm", msg);
 
         questionController.loadQuestions();
+
+        settleReport();
+    }
+
+    //Decline a Report
+    public void declineReport() {
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die Meldung wurde abgelehnt.", null);
+        FacesContext.getCurrentInstance().addMessage("reportsForm", msg);
 
         settleReport();
     }

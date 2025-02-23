@@ -29,6 +29,9 @@ public class Suggestion implements Serializable {
     @Column(nullable = false)
     private boolean isAccepted = false;
 
+    @Column(nullable = false)
+    private boolean isDenied = false;
+
     //Constructor
 
     public Suggestion() {
@@ -57,6 +60,10 @@ public class Suggestion implements Serializable {
         return this.isAccepted;
     }
 
+    public boolean getIsDenied() {
+        return this.isDenied;
+    }
+
     //Setter
 
     public void setQuestion(Question question) {
@@ -69,5 +76,9 @@ public class Suggestion implements Serializable {
 
     public void setIsAccepted(boolean isAccepted) {
         this.isAccepted = isAccepted;
+    }
+
+    public void setIsDenied(boolean isDenied) {
+        this.isDenied = isDenied;
     }
 }

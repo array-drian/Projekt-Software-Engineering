@@ -30,7 +30,7 @@ public class LoginController implements Serializable {
 
     private String tempUsername;
 
-    private boolean login = false;
+    private boolean login = true;
 
     //Getter
 

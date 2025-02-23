@@ -49,7 +49,8 @@ public class SuggestionDAO {
     public List<Suggestion> getPendingSuggestions() {
         return entityManager.createQuery(
             "SELECT s FROM Suggestion s " +
-            "WHERE s.isAccepted = false", Suggestion.class)
+            "WHERE s.isAccepted = false " +
+            "AND s.isDenied = false", Suggestion.class)
             .getResultList();
     }
 

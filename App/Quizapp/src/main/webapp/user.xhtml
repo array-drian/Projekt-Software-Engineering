@@ -11,12 +11,11 @@
         <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
     </h:head>
-    <h:body>
+    <h:body >
+        <!-- Include Navbar -->
+        <ui:include src="navbar.xhtml" />
         <h1>Profil</h1>
         <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
-        <h:form>
-        <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
-        </h:form>
 
         <h2>Deine Statistiken</h2>
         <h:panelGroup rendered="#{statisticsController.totalGamesPlayed == 0}">

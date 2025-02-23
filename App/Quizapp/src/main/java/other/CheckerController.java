@@ -29,6 +29,18 @@ public class CheckerController implements Serializable {
         }
     }
 
+    public void checkLoginAndNoMod() {
+        if(!currentUser.isValid()) {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            NavigationHandler nh = fc.getApplication().getNavigationHandler();
+            nh.handleNavigation(fc, null, "index.xhtml?faces-redirect=true");
+        }else if(currentUser.getUser().getIsMod()) {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            NavigationHandler nh = fc.getApplication().getNavigationHandler();
+            nh.handleNavigation(fc, null, "modpanel.xhtml?faces-redirect=true");
+        }
+    }
+
     //Check if a user is logged in and is a moderator
     public void checkLoginAndPermission() {
         if(!currentUser.isValid()) {

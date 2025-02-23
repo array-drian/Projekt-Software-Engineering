@@ -3,143 +3,174 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets">
-  <h:head>
-  <title>Modpanel</title>
-    <f:metadata>
-      <f:viewAction action="#{checkerController.checkLoginAndPermission()}" />
-    </f:metadata>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
-  </h:head>
-  <h:body>
-    <h2>Modpanel</h2>
-    <p><h:outputText value="#{currentUser.user.getUserName()}"/></p>
-    <h:form>
-      <p><h:commandButton action="#{loginController.logout}" value="Ausloggen"/></p>
-    </h:form>
-    <a href="#{request.contextPath}/app.xhtml">Zur App</a>
-    <h2>Neue Kategorie erstellen</h2>
-    <h:form id="createCategoryForm">
-      <p><h:outputLabel for="category" value="Kategorie:" /></p>
-      <p><h:inputText id="category" value="#{categoryBean.category}" required="true" /></p>
+    <h:head>
+        <title>Modpanel</title>
+        <f:metadata>
+            <f:viewAction action="#{checkerController.checkLoginAndPermission()}" />
+        </f:metadata>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    </h:head>
+    <h:body class="min-vh-100">
+        <!-- Include Navbar -->
+        <ui:include src="navbar.xhtml" />
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 d-flex  justify-content-center align-items-center">
+                    <p><h2>Modpanel</h2></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 d-flex justify-content-center">
+                    <h:form id="createQuestionsForm">
+                        <p><h3 class="text-center">Neue Frage erstellen</h3></p>
+
+                        <p><h:outputLabel for="question" value="Frage:" /></p>
+                        <p><h:inputText id="question" value="#{questionBean.question}" size="40" required="true" class="form-control" /></p>
+
+                        <p><h:outputLabel for="category" value="Kategorie:" /></p>
+                        <p><h:selectOneMenu id="category" value="#{questionBean.category}" converter="#{categoryConverter}" styleClass="form-select">
+                            <f:selectItems value="#{questionBean.allCategories}" var="cat" itemLabel="#{cat.category}" itemValue="#{cat}" />
+                        </h:selectOneMenu></p>
+
+                        <p><h:outputLabel for="correctAnswer" value="Richtige Antwort:" /></p>
+                        <p><h:inputText id="correctAnswer" value="#{questionBean.correctAnswer}" size="40" required="true" class="form-control" /></p>
+
+                        <p><h:outputLabel value="Andere Antwortmöglichkeiten:" /></p>
+                        <ui:repeat value="#{questionBean.answers}" var="answer" varStatus="status">
+                            <p><h:inputText value="#{questionBean.answers[status.index]}" size="40" required="true" class="form-control" /></p>
+                        </ui:repeat>
+
+                        <p><h:commandButton value="Frage einreichen" action="#{questionBean.createQuestion}" class="btn btn-outline-primary me-2">
+                            <f:ajax execute="@form" render="@form questionsWrapper" />
+                        </h:commandButton></p>
+                        <h:messages for="createQuestionsForm" layout="table" class="text-danger" />
+                    </h:form>
+                </div>
+                <div class="col-md-6 d-flex justify-content-center">
+                    <h:form id="createCategoryForm">
+                        <p><h3 class="text-center">Neue Kategorie erstellen</h3></p>
+
+                        <p><h:outputLabel for="category" value="Kategorie:" /></p>
+                        <p><h:inputText id="category" value="#{categoryBean.category}" size="40" required="true" class="form-control" /></p>
     
-      <p><h:commandButton value="Kategorie erstellen" action="#{categoryBean.saveToDatabase}" /></p>
-      <h:messages for="createCategoryForm" layout="table" />
-    </h:form>
-
-    <h2>Neue Frage erstellen</h2>
-
-    <h:form id="createQuestionsForm">
-      <h:panelGrid columns="2">
-        <h:outputLabel for="question" value="Frage:" />
-        <h:inputText id="question" value="#{questionBean.question}" required="true"/>
-
-        <h:outputLabel for="category" value="Kategorie:" />
-        <h:selectOneMenu id="category" value="#{questionBean.category}" converter="#{categoryConverter}">
-          <f:selectItems value="#{questionBean.allCategories}" var="cat" itemLabel="#{cat.category}" itemValue="#{cat}" />
-        </h:selectOneMenu>
-
-        <h:outputLabel for="correctAnswer" value="Richtige Antwort:" />
-        <h:inputText id="correctAnswer" value="#{questionBean.correctAnswer}" required="true"/>
-
-        <h:outputLabel value="Andere Antwortmöglichkeiten:" />
-        <ui:repeat value="#{questionBean.answers}" var="answer" varStatus="status">
-            <h:inputText value="#{questionBean.answers[status.index]}" required="true"/><br />
-        </ui:repeat>
-
-        <h:commandButton value="Frage einreichen" action="#{questionBean.createQuestion}">
-          <f:ajax execute="@form" render="@form questionsWrapper" />
-        </h:commandButton>
-      </h:panelGrid>
-      <h:messages for="createQuestionsForm" layout="table" />
-    </h:form>
-    <h2>Ausstehende Vorschläge</h2>
-  
-    <h:form id="suggestionsForm">
-      <h:outputText value="#{suggestionController.getSuggestion().question.question}" />
-
-      <ui:repeat value="#{suggestionController.getSuggestion().question.getAnswers()}" var="answer">
-        <h:outputText value="#{answer.answer}" />
-      </ui:repeat>
-
-      <h:commandButton value="Akzeptieren" action="#{suggestionController.acceptSuggestion}">
-        <f:ajax execute="@form" render="@form questionsWrapper" />
-      </h:commandButton>
-      <h:commandButton value="Ablehnen" action="#{suggestionController.declineSuggestion}" />
-
-      <h:commandButton value="Zurück" action="#{suggestionController.previousSuggestion}" disabled="#{suggestionController.index == 0}" />
-      <h:commandButton value="Vor" action="#{suggestionController.nextSuggestion}" disabled="#{suggestionController.index == suggestionController.maxIndex}" />
-
-      <h:outputText value="#{suggestionController.getIndex() + 1} / #{suggestionController.getMaxIndex() + 1}" />
-      <h:messages for="suggestionsForm" layout="table" />
-    </h:form>
-
-    <h2>Ausstehende Reports</h2>
-  
-    <h:form id="reportsForm">
-      <h:outputLabel for="questionInput" value="Frage: " />
-      <h:inputText id="questionInput" value="#{reportController.report.question.question}" />
-
-      <ui:repeat value="#{reportController.report.question.answers}" var="answer" varStatus="status">
-        <h:outputLabel for="answerInput#{status.index}" value="Antwort #{status.index + 1}: " />
-        <h:inputText id="answerInput#{status.index}" value="#{answer.answer}" />
-      </ui:repeat>
-
-      <h:outputText value="Nachricht des Nutzers: #{reportController.report.message}" />
-
-      <h:commandButton value="Änderungen speichern" action="#{reportController.changeQuestion}">
-        <f:ajax execute="@form" render="@form questionsWrapper" />
-      </h:commandButton>
-
-      <h:commandButton value="Ablehnen" action="#{reportController.settleReport}">
-        <f:ajax execute="@form" render="@form" />
-      </h:commandButton>
-
-      <h:commandButton value="Zurück" action="#{reportController.previousSuggestion}" disabled="#{reportController.index == 0}">
-        <f:ajax execute="@form" render="@form" />
-      </h:commandButton>
-
-      <h:commandButton value="Vor" action="#{reportController.nextSuggestion}" disabled="#{reportController.index == reportController.maxIndex}">
-        <f:ajax execute="@form" render="@form" />
-      </h:commandButton>
-
-      <h:outputText value="#{reportController.index + 1} / #{reportController.maxIndex + 1}" />
-      <h:messages for="reportsForm" layout="table" />
-    </h:form>
-
-    <h:panelGroup id="questionsWrapper">
-      <h2>Fragenbestand bearbeiten</h2>
-
-      <h:form id="editQuestionsForm">
-        <h:dataTable value="#{questionController.allQuestions}" var="question">
-          <h:column>
-            <f:facet name="header">Frage</f:facet>
-            <h:inputText value="#{question.question}" />
-          </h:column>
-          
-          <h:column>
-            <f:facet name="header">Richtige Antwort</f:facet>
-            <h:inputText value="#{question.answers[0].answer}" />
-          </h:column>
-          
-          <h:column>
-            <f:facet name="header">Weitere Falsche Antworten</f:facet>
-            <h:inputText value="#{question.answers[1].answer}" />
-            <h:inputText value="#{question.answers[2].answer}" />
-            <h:inputText value="#{question.answers[3].answer}" />
-          </h:column>
-  
-          <h:column>
-            <f:facet name="header">Änderungen speichern</f:facet>
-            <h:commandButton value="Save" action="#{questionController.changeQuestion(question)}" />
-          </h:column>
-          
-        </h:dataTable>
-        <h:messages for="editQuestionsForm" layout="table" />
-      </h:form>
-    </h:panelGroup>
-
-    <!-- Bootstrap JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  </h:body>
+                        <p><h:commandButton value="Kategorie erstellen" action="#{categoryBean.saveToDatabase}" class="btn btn-outline-primary me-2" /></p>
+                        <h:messages for="createCategoryForm" layout="table" class="text-danger" />
+                    </h:form>
+                </div>
+            </div>
+            <div class="row">
+                <h:panelGroup id="suggestionsWrapper">
+                    <h:panelGroup rendered="#{not empty suggestionController.pendingSuggestions}">
+                        <div class="col-md-6 d-flex justify-content-center">
+                            <h:form id="suggestionsForm">
+                                <p><h3 class="text-center">Ausstehende Vorschläge</h3></p>
+    
+                                <p><h:outputLabel for="questionInput" value="Frage: " /></p>
+                                <p><h:outputText id="questionInput" value="#{suggestionController.suggestion.question.question}" /></p>
+    
+                                <p><h:outputLabel for="rightAnswer" value="Richtige Antwort:" /></p>
+                                <p><h:outputText id="rightAnswer" value="#{suggestionController.suggestion.question.answers[0].answer}" /></p>
+    
+                                <p><h:outputLabel for="otherAnswers" value="Andere Antwortmöglichkeiten:" /></p>
+                                <p><h:outputText id="otherAnswers" value="#{suggestionController.suggestion.question.answers[1].answer}" /></p>
+                                <p><h:outputText value="#{suggestionController.suggestion.question.answers[2].answer}" /></p>
+                                <p><h:outputText value="#{suggestionController.suggestion.question.answers[3].answer}" /></p>
+    
+                                <p><h:commandButton value="Akzeptieren" action="#{suggestionController.acceptSuggestion}" class="btn btn-outline-primary me-2">
+                                    <f:ajax render="@form questionsWrapper suggestionsWrapper" />
+                                </h:commandButton>
+                                <h:commandButton value="Ablehnen" action="#{suggestionController.declineSuggestion}" class="btn btn-outline-primary me-2">
+                                    <f:ajax render="@form suggestionsWrapper" />
+                                </h:commandButton>
+    
+                                <h:commandButton value="Zurück" action="#{suggestionController.previousSuggestion}" disabled="#{suggestionController.index == 0}" class="btn btn-outline-primary me-2" />
+                                <h:commandButton value="Vor" action="#{suggestionController.nextSuggestion}" disabled="#{suggestionController.index == suggestionController.maxIndex}" class="btn btn-outline-primary me-2" />
+    
+                                <h:outputText value="#{suggestionController.getIndex() + 1} / #{suggestionController.getMaxIndex() + 1}" /></p>
+                                <h:messages for="suggestionsForm" layout="table" class="text-danger" />
+                            </h:form>
+                        </div>
+                    </h:panelGroup>
+                </h:panelGroup>
+                <h:panelGroup id="reportsWrapper">
+                    <h:panelGroup rendered="#{not empty reportController.pendingReports}">
+                        <div class="col-md-6 d-flex justify-content-center">
+                            <h:form id="reportsForm">
+                                <p><h3 class="text-center">Ausstehende Meldungen</h3></p>
+    
+                                <p><h:outputLabel for="questionInput" value="Frage: " /></p>
+                                <p><h:inputText id="questionInput" value="#{reportController.report.question.question}" size="40" class="form-control" /></p>
+    
+                                <p><h:outputLabel for="rightAnswer" value="Richtige Antwort:" /></p>
+                                <p><h:inputText id="rightAnswer" value="#{reportController.report.question.answers[0].answer}" size="40" class="form-control" /></p>
+    
+                                <p><h:outputLabel for="otherAnswers" value="Andere Antwortmöglichkeiten:" /></p>
+                                <p><h:inputText id="otherAnswers" value="#{reportController.report.question.answers[1].answer}" size="40" class="form-control" /></p>
+                                <p><h:inputText value="#{reportController.report.question.answers[2].answer}" size="40" class="form-control" /></p>
+                                <p><h:inputText value="#{reportController.report.question.answers[3].answer}" size="40" class="form-control" /></p>
+    
+                                <p><h:outputText value="Nachricht des Nutzers: #{reportController.report.message}" /></p>
+    
+                                <p><h:commandButton value="Änderungen speichern" action="#{reportController.changeQuestion}" class="btn btn-outline-primary me-2">
+                                    <f:ajax execute="@form" render="@form questionsWrapper reportsWrapper" />
+                                </h:commandButton>
+    
+                                <h:commandButton value="Ablehnen" action="#{reportController.declineReport}" class="btn btn-outline-primary me-2">
+                                    <f:ajax execute="@form" render="@form reportsWrapper" />
+                                </h:commandButton>
+    
+                                <h:commandButton value="Zurück" action="#{reportController.previousSuggestion}" disabled="#{reportController.index == 0}" class="btn btn-outline-primary me-2" />
+    
+                                <h:commandButton value="Vor" action="#{reportController.nextSuggestion}" disabled="#{reportController.index == reportController.maxIndex}" class="btn btn-outline-primary me-2" />
+    
+                                <h:outputText value="#{reportController.index + 1} / #{reportController.maxIndex + 1}" /></p>
+                                <h:messages for="reportsForm" layout="table" class="text-danger" />
+                            </h:form>
+                        </div>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </div>
+            <div class="row">
+                <h:panelGroup rendered="#{not empty questionController.allQuestions}">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <h:panelGroup id="questionsWrapper">
+                            <h:form id="editQuestionsForm">
+                                <p><h3 class="text-center">Fragenbestand bearbeiten</h3></p>
+    
+                                <h:dataTable value="#{questionController.allQuestions}" var="question" class="table">
+                                    <h:column class="border-bottom">
+                                        <f:facet name="header">Frage</f:facet>
+                                        <h:inputText value="#{question.question}" size="40" class="form-control" />
+                                    </h:column>
+              
+                                    <h:column class="border-bottom">
+                                        <f:facet name="header">Richtige Antwort</f:facet>
+                                        <h:inputText value="#{question.answers[0].answer}" size="40" class="form-control" />
+                                    </h:column>
+              
+                                    <h:column class="border-bottom">
+                                        <f:facet name="header">Andere Antwortmöglichkeiten</f:facet>
+                                        <p><h:inputText value="#{question.answers[1].answer}" size="40" class="form-control" /></p>
+                                        <p><h:inputText value="#{question.answers[2].answer}" size="40" class="form-control" /></p>
+                                        <p><h:inputText value="#{question.answers[3].answer}" size="40" class="form-control" /></p>
+                                    </h:column>
+      
+                                    <h:column class="border-bottom">
+                                        <f:facet name="header">Änderungen speichern</f:facet>
+                                        <h:commandButton value="Save" action="#{questionController.changeQuestion(question)}" class="btn btn-outline-primary me-2" />
+                                    </h:column>
+              
+                                </h:dataTable>
+                                <h:messages for="editQuestionsForm" layout="table" class="text-danger" />
+                            </h:form>
+                        </h:panelGroup>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+        <!-- Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </h:body>
 </html>
