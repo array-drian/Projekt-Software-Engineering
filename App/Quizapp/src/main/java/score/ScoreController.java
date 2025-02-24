@@ -18,8 +18,6 @@ public class ScoreController implements Serializable {
 
     private List<Game> finishedMultiplayerGamesForUser;
 
-    private List<Game> playedButUnfinishedMultiplayerGamesForUser;
-
     @Inject
     private CurrentUser currentUser;
 
@@ -41,10 +39,6 @@ public class ScoreController implements Serializable {
         return this.finishedMultiplayerGamesForUser;
     }
 
-    public List<Game> getPlayedButUnfinishedMultiplayerGamesForUser() {
-        return this.playedButUnfinishedMultiplayerGamesForUser;
-    }
-
     //Other
 
     //Fills the lists with data from the Database
@@ -52,7 +46,6 @@ public class ScoreController implements Serializable {
         int userID = currentUser.getUser().getUserID();
         this.finishedSingleplayerGamesForUser = scoreDAO.getFinishedSingleplayerGamesForUser(userID);
         this.finishedMultiplayerGamesForUser = scoreDAO.getFinishedMuliplayerGamesForUser(userID);
-        this.playedButUnfinishedMultiplayerGamesForUser = scoreDAO.getPlayedButUnfinishedMuliplayerGamesForUser(userID);
     }
 
     //Gets the score for the current user in a given Game

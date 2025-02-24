@@ -85,8 +85,14 @@ public class QuizBean implements Serializable {
     public void createQuiz() {
         User user = currentUser.getUser();
         this.questions = questionDAO.getRandomQuestions(category.getCategoryID());
-        if(category == null || questions.size() != 10) {
+        if(category == null) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Deine Eingaben sind ungültig.", null);
+            FacesContext.getCurrentInstance().addMessage("createQuizForm", msg);
+            return;
+        }
+
+        if(questions.size() != 10) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Es sind nicht genügend Fragen vorhanden.", null);
             FacesContext.getCurrentInstance().addMessage("createQuizForm", msg);
             return;
         }

@@ -144,23 +144,6 @@ public class ScoreDAO {
             .getResultList();
     }
 
-    //Gets all played but infinished Multiplayer games for userID = userID
-    public List<Game> getPlayedButUnfinishedMuliplayerGamesForUser(int userID) {
-        return entityManager.createQuery(
-            "SELECT g FROM Game g " +
-            "JOIN g.users u " +
-            "WHERE u.userID = :userID " +
-            "AND g.isFinished = false " +
-            "AND g.isMultiplayer = true " +
-            "AND SIZE(g.users) = g.maxPlayers " +
-            "AND EXISTS ( " +
-            "   SELECT s FROM Score s " +
-            "   WHERE s.game = g AND s.user.userID = :userID" +
-            ")", Game.class)
-            .setParameter("userID", userID)
-            .getResultList();
-    }
-
     //Create a transaction
     public EntityTransaction beginTransaction() {
         if(!entityManager.getTransaction().isActive()) {
