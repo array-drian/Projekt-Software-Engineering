@@ -76,6 +76,22 @@ public class ScoreDAO {
         }
     }
 
+    //Gets the total number of wins for userID = userID
+    public Long getTotalMultiplayerGamesWonForUser(int userID) {
+        try {
+            return entityManager.createQuery(
+                "SELECT COUNT(DISTINCT s1.game.gameID) " +
+                "FROM Score s1 " +
+                "WHERE s1.user.userID = :userID " +
+                "AND s1.score = (SELECT MAX(s2.score) FROM Score s2 WHERE s2.game = s1.game)", 
+                Long.class)
+                .setParameter("userID", userID)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
     //Get top 10 users and there amount of scores
     public List<Object[]> getTop10UsersByScoreCount() {
         return entityManager.createQuery(

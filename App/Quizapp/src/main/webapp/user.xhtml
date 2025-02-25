@@ -9,9 +9,10 @@
             <f:viewAction action="#{checkerController.checkLogin()}" />
         </f:metadata>
         <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+        <h:outputStylesheet library="css" name="main.css"/>
     </h:head>
-    <h:body >
+    <h:body class="min-vh-100">
         <!-- Include Navbar -->
         <ui:include src="navbar.xhtml" />
         <div class="container">
@@ -69,6 +70,8 @@
 
                             <p>Insgesamt richtig beantwortete Fragen: <h:outputText id="totalRightAnswers" value="#{statisticsController.totalCorrectAnswers}" /></p>
 
+                            <p>Insgesamt gewonnene Mehrspieler Partien: <h:outputText id="totalGamesWon" value="#{statisticsController.totalMultiplayerGamesWon}" /></p>
+
                             <p>Durchschnittlich richtig beantwortete Fragen: <h:outputText id="averageCorrect" value="#{statisticsController.averageCorrectAnswers}" /></p>
 
                             <p>Am häufigsten gespielte Kategorie: <h:outputText id="favouriteCategory" value="#{statisticsController.favouriteCategory.category}" /></p>
@@ -95,17 +98,17 @@
                         <h:form>
                             <p><h5>Einzelspieler Spiele</h5></p>
                             <h:dataTable value="#{scoreController.finishedSingleplayerGamesForUser}" var="game" class="table">
-                                <h:column class="border-bottom">
+                                <h:column class="border-bottom align-middle">
                                     <f:facet name="header">Game ID</f:facet>
                                     <h:outputText value="#{game.gameID}" />
                                 </h:column>
 
-                                <h:column class="border-bottom">
+                                <h:column class="border-bottom align-middle">
                                     <f:facet name="header">Kategorie</f:facet>
                                     <h:outputText value="#{game.quiz.category.category}" />
                                 </h:column>
 
-                                <h:column class="border-bottom">
+                                <h:column class="border-bottom align-middle">
                                     <f:facet name="header">Dein Score</f:facet>
                                     <h:outputText value="#{scoreController.getScoreForUserInGame(game)}" />
                                 </h:column>
@@ -118,20 +121,27 @@
                         <h:form>
                             <p><h5>Mehrspieler Spiele</h5></p>
                             <h:dataTable value="#{scoreController.finishedMultiplayerGamesForUser}" var="game" class="table">
-                            <h:column class="border-bottom">
-                                <f:facet name="header">Game ID</f:facet>
-                                <h:outputText value="#{game.gameID}" />
-                            </h:column>
+                                <h:column class="border-bottom align-middle">
+                                    <f:facet name="header">Game ID</f:facet>
+                                    <h:outputText value="#{game.gameID}" />
+                                </h:column>
 
-                            <h:column class="border-bottom">
-                                <f:facet name="header">Kategorie</f:facet>
-                                <h:outputText value="#{game.quiz.category.category}" />
-                            </h:column>
+                                <h:column class="border-bottom align-middle">
+                                    <f:facet name="header">Kategorie</f:facet>
+                                    <h:outputText value="#{game.quiz.category.category}" />
+                                </h:column>
 
-                            <h:column class="border-bottom">
-                                <f:facet name="header">Dein Score</f:facet>
-                                <h:outputText value="#{scoreController.getScoreForUserInGame(game)}" />
-                            </h:column>
+                                <h:column class="border-bottom align-middle">
+                                    <f:facet name="header">Dein Score</f:facet>
+                                    <h:outputText value="#{scoreController.getScoreForUserInGame(game)}" />
+                                </h:column>
+
+                                <h:column class="border-bottom align-middle">
+                                    <f:facet name="header">Scores der anderen Spieler</f:facet>
+                                    <ui:repeat value="#{scoreController.getUserScoresForGameWithoutCurrentUser(game)}" var="entry">
+                                        <h:outputText value="#{entry[0].userName}" />: <h:outputText value="#{entry[1].score}" /><br />
+                                    </ui:repeat>
+                                </h:column>
                             </h:dataTable>
                         </h:form>
                     </div>

@@ -1,6 +1,7 @@
 package score;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import game.Game;
@@ -59,4 +60,15 @@ public class ScoreController implements Serializable {
         }
         return 0;
     }
+
+    public List<Object[]> getUserScoresForGameWithoutCurrentUser(Game game) {
+        List<Object[]> userScores = new ArrayList<>();
+        for(Score score : game.getScores()) {
+            if(!score.getUser().getUserName().equals(currentUser.getUser().getUserName())) {
+                userScores.add(new Object[]{score.getUser(), score});
+            }
+        }
+        return userScores;
+    }
+
 }

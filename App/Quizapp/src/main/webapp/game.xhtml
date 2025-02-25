@@ -10,51 +10,77 @@
         </f:metadata>
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+        <h:outputStylesheet library="css" name="main.css"/>
     </h:head>
-    <h:body>
+    <h:body class="min-vh-100">
         <!-- Include Navbar -->
         <ui:include src="navbar.xhtml" />
-        <h2>Quiz</h2>
-        <p><h:outputText value="#{currentGame.getGame().getQuiz().getCategory().getCategory()}"/></p>
-        <h:form id="quizForm">
-            <h:outputText value="Frage: #{quizController.question.question}" />
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                    <p><h2>Quiz</h2></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                    <p><h3><h:outputText value="#{currentGame.getGame().getQuiz().getCategory().getCategory()}"/></h3></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                    <h:form id="quizForm">
+                        <h:panelGroup rendered="#{quizController.submittedAnswers != 10}">
+                            <p><h:outputLabel for="question" value="Frage:" /></p>
+                            <p><h:outputText id="question" value="#{quizController.question.question}" /></p>
+            
+                            <p><h:outputLabel for="answers" value="Antwortmöglichkeiten:" /></p>
+                            <ui:repeat value="#{quizController.answers}" var="answer">
+                                <p><h:commandButton value="#{answer.answer}" action="#{quizController.validateAnswer(answer)}" class="btn btn-primary w-100">
+                                    <f:ajax render="@form" />
+                                </h:commandButton></p>
+                            </ui:repeat>
+            
+                            <p></p><h:outputText value="Frage #{quizController.index + 1} von #{quizController.maxIndex + 1}" />
+            
+                            <p><h:outputText value="Aktueller Punktestand: #{quizController.score}" /></p>
+            
+                            <h:panelGroup id="reportPanel">
+                                <p><h:commandButton value="Frage melden" action="#{quizController.setReportCurrentQuestion(true)}" rendered="#{!quizController.reportCurrentQuestion}" class="btn btn-outline-primary me-2">
+                                    <f:ajax render="reportPanel" />
+                                </h:commandButton></p>
+            
+                                <h:panelGroup rendered="#{quizController.reportCurrentQuestion}">
+                                    <p><h:selectOneMenu value="#{quizController.message}" styleClass="form-select">
+                                        <f:selectItem itemLabel="Bitte wählen..." itemValue="" />
+                                        <f:selectItem itemLabel="Keine richtige Antwortmöglichkeit vorhanden" itemValue="Keine richtige Antwortmöglichkeit vorhanden" />
+                                        <f:selectItem itemLabel="Frage ist unverständlich formuliert" itemValue="Frage ist unverständlich formuliert" />
+                                        <f:selectItem itemLabel="Es ist ein Rechtschreibfehler vorhanden" itemValue="Es ist ein Rechtschreibfehler vorhanden" />
+                                        <f:ajax render="reportPanel" />
+                                    </h:selectOneMenu></p>
+            
+                                    <h:panelGroup rendered="#{not empty quizController.message}">
+                                        <h:commandButton value="Meldung abschicken" action="#{quizController.reportQuestion}" class="btn btn-outline-primary me-2" style="margin-right: 25px;">
+                                            <f:ajax render="@form reportPanel" />
+                                        </h:commandButton>
+                                    </h:panelGroup>
 
-            <ui:repeat value="#{quizController.answers}" var="answer">
-                <h:commandButton value="#{answer.answer}" action="#{quizController.validateAnswer(answer)}" />
-            </ui:repeat>
+                                    <h:commandButton value="Report abbrechen" action="#{quizController.setReportCurrentQuestion(false)}" class="btn btn-outline-primary me-2">
+                                        <f:ajax render="@form reportPanel" />
+                                    </h:commandButton>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                        </h:panelGroup>
 
-            <h:outputText value="Frage #{quizController.index + 1} von #{quizController.maxIndex + 1}" />
+                        <h:panelGroup rendered="#{quizController.submittedAnswers == 10}">
+                            <p><h:outputText value="Du hast: #{quizController.score} Punkte erzielt." /></p>
+                            <p><h:commandButton value="Quiz beenden" action="#{quizController.endGame}" class="btn btn-outline-primary me-2" /></p>
+                        </h:panelGroup>
 
-            <h:panelGroup rendered="#{quizController.submittedAnswers == 10}">
-                <h:commandButton value="Quiz beenden" action="#{quizController.endGame}" />
-            </h:panelGroup>
-
-            <h:outputText value="Aktueller Punktestand: #{quizController.score}" />
-
-            <h:panelGroup id="reportPanel">
-                <h:commandButton value="Frage melden" action="#{quizController.setReportCurrentQuestion(true)}" rendered="#{!quizController.reportCurrentQuestion}">
-                    <f:ajax render="reportPanel" />
-                </h:commandButton>
-
-                <h:panelGroup rendered="#{quizController.reportCurrentQuestion}">
-                    <h:selectOneMenu value="#{quizController.message}">
-                        <f:selectItem itemLabel="Bitte wählen..." itemValue="" />
-                        <f:selectItem itemLabel="Keine richtige Antwortmöglichkeit vorhanden" itemValue="Keine richtige Antwortmöglichkeit vorhanden" />
-                        <f:selectItem itemLabel="Frage ist unverständlich formuliert" itemValue="Frage ist unverständlich formuliert" />
-                        <f:selectItem itemLabel="Es ist ein Rechtschreibfehler vorhanden" itemValue="Es ist ein Rechtschreibfehler vorhanden" />
-                        <f:ajax render="reportPanel" />
-                    </h:selectOneMenu>
-
-                    <h:panelGroup rendered="#{not empty quizController.message}">
-                        <h:commandButton value="Meldung abschicken" action="#{quizController.reportQuestion}">
-                            <f:ajax render="@form reportPanel" />
-                        </h:commandButton>
-                    </h:panelGroup>
-                </h:panelGroup>
-            </h:panelGroup>
-            <h:messages for="quizForm" layout="table" />
-        </h:form>
-
+                        <h:messages for="quizForm" layout="table"  class="text-danger" />
+                    </h:form>
+                </div>
+            </div>
+        </div>
         <!-- Bootstrap JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     </h:body>

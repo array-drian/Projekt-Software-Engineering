@@ -22,6 +22,8 @@ public class StatisticsController implements Serializable {
 
     private Long totalCorrectAnswers;
 
+    private Long totalMultiplayerGamesWon;
+
     private double averageCorrectAnswers;
 
     private Category favouriteCategory;
@@ -51,6 +53,10 @@ public class StatisticsController implements Serializable {
         return this.totalCorrectAnswers;
     }
 
+    public Long getTotalMultiplayerGamesWon() {
+        return this.totalMultiplayerGamesWon;
+    }
+
     public double getAverageCorrectAnswers() {
         return this.averageCorrectAnswers;
     }
@@ -67,6 +73,7 @@ public class StatisticsController implements Serializable {
         this.totalGamesPlayed = scoreDAO.getScoreCountForUser(userID);
         this.totalQuestionsAnswered = this.totalGamesPlayed * 10;
         this.totalCorrectAnswers = scoreDAO.getTotalScoreForUser(userID);
+        this.totalMultiplayerGamesWon = scoreDAO.getTotalMultiplayerGamesWonForUser(userID);
         this.averageCorrectAnswers = (totalGamesPlayed == 0) ? 0.0 : new BigDecimal((double) totalCorrectAnswers / totalGamesPlayed)
             .setScale(2, RoundingMode.HALF_UP)
             .doubleValue();

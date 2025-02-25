@@ -5,3 +5,11 @@
 .radio-group tbody tr td {
     padding-right: 20px;
 }
+
+header form {
+    margin: 0 !important;
+}
+
+.welcome-header {
+    padding-right: 20px !important;
+}
