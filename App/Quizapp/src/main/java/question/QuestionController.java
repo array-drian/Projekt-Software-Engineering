@@ -61,11 +61,11 @@ public class QuestionController implements Serializable {
 
     //Delete a Question
     public void deleteQuestion(Question question) {
-        Question changedQuestion = questionDAO.merge(question);
+        Question deletedQuestion = questionDAO.merge(question);
 
-        changedQuestion.setIsActive(false);
+        deletedQuestion.setIsActive(false);
 
-        questionDAO.persist(changedQuestion);
+        questionDAO.persist(deletedQuestion);
 
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich gelöscht.", null);
         FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);

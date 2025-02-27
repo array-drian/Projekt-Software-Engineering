@@ -49,7 +49,7 @@ public class CategoryDAO {
     //Get all Entities from Category
     public List<Category> getAllCategorys() {
         return entityManager.createQuery(
-            "SELECT c FROM Category c", Category.class)
+            "SELECT c FROM Category c WHERE c.isActive = true", Category.class)
             .getResultList();
     }
 
