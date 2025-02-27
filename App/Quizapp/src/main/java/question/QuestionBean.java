@@ -30,6 +30,9 @@ public class QuestionBean implements Serializable {
     private CategoryDAO categoryDAO;
 
     @Inject
+    private QuestionDAO questionDAO;
+
+    @Inject
     private QuestionController questionController;
 
     //Constructor
@@ -99,7 +102,7 @@ public class QuestionBean implements Serializable {
     
         category.getQuestions().add(newQuestion);
         try {
-            categoryDAO.persist(category);
+            questionDAO.persist(newQuestion);
     
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich erstellt.", null);
             FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
