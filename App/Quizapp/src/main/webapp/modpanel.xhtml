@@ -43,7 +43,7 @@
                             <p><h:inputText value="#{questionBean.answers[status.index]}" size="40" required="true" class="form-control" /></p>
                         </ui:repeat>
 
-                        <p><h:commandButton value="Frage einreichen" action="#{questionBean.createQuestion}" class="btn btn-outline-primary me-2">
+                        <p><h:commandButton value="Frage speichern" action="#{questionBean.createQuestion}" class="btn btn-outline-primary me-2">
                             <f:ajax execute="@form" render="@form questionsWrapper" />
                         </h:commandButton></p>
                         <h:messages for="createQuestionsForm" layout="table" class="text-danger" />
@@ -62,9 +62,9 @@
                 </div>
             </div>
             <div class="row">
-                <h:panelGroup id="suggestionsWrapper">
-                    <h:panelGroup rendered="#{not empty suggestionController.pendingSuggestions}">
-                        <div class="col-md-6 d-flex justify-content-center">
+                <div class="col-md-6 d-flex justify-content-center">
+                    <h:panelGroup id="suggestionsWrapper">
+                        <h:panelGroup rendered="#{not empty suggestionController.pendingSuggestions}">
                             <h:form id="suggestionsForm">
                                 <p><h3 class="text-center">Ausstehende Vorschläge</h3></p>
     
@@ -92,12 +92,12 @@
                                 <h:outputText value="#{suggestionController.getIndex() + 1} / #{suggestionController.getMaxIndex() + 1}" /></p>
                                 <h:messages for="suggestionsForm" layout="table" class="text-danger" />
                             </h:form>
-                        </div>
+                        </h:panelGroup>
                     </h:panelGroup>
-                </h:panelGroup>
-                <h:panelGroup id="reportsWrapper">
-                    <h:panelGroup rendered="#{not empty reportController.pendingReports}">
-                        <div class="col-md-6 d-flex justify-content-center">
+                </div>
+                <div class="col-md-6 d-flex justify-content-center">
+                    <h:panelGroup id="reportsWrapper">
+                        <h:panelGroup rendered="#{not empty reportController.pendingReports}">
                             <h:form id="reportsForm">
                                 <p><h3 class="text-center">Ausstehende Meldungen</h3></p>
     
@@ -129,9 +129,9 @@
                                 <h:outputText value="#{reportController.index + 1} / #{reportController.maxIndex + 1}" /></p>
                                 <h:messages for="reportsForm" layout="table" class="text-danger" />
                             </h:form>
-                        </div>
+                        </h:panelGroup>
                     </h:panelGroup>
-                </h:panelGroup>
+                </div>
             </div>
             <div class="row">
                 <h:panelGroup rendered="#{not empty questionController.allQuestions}">
@@ -160,7 +160,7 @@
       
                                     <h:column class="border-bottom">
                                         <f:facet name="header">Änderungen speichern</f:facet>
-                                        <h:commandButton value="Save" action="#{questionController.changeQuestion(question)}" class="btn btn-outline-primary me-2" />
+                                        <h:commandButton value="Speichern" action="#{questionController.changeQuestion(question)}" class="btn btn-outline-primary me-2" />
                                     </h:column>
               
                                 </h:dataTable>
@@ -181,12 +181,18 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Frage 1
+                                    Neue Frage erstellen
                                 </button>
                             </h2>
                             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
                                 <div class="accordion-body">
-                                    Antwort 1
+                                    <ul>
+                                        <li>Gib zunächst die zu stellende Frage ein</li>
+                                        <li>Ordne die Frage einer Kategorie zu</li>
+                                        <li>Gib die richtige Antwort in das entsprechende Feld ein</li>
+                                        <li>Lass dir drei weitere, falsche Antwortmöglichkeiten einfallen und trage sie in die dafür vorgesehenen Felder</li>
+                                        <li>Mit einem Klick auf „Frage speichern“ wird die Frage in der Datenbank gespeichert</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -194,12 +200,14 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingTwo">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Frage 2
+                                    Neue Kategorie erstellen
                                 </button>
                             </h2>
                             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
                                 <div class="accordion-body">
-                                    Antwort 2
+                                    <ul>
+                                        <li>Gib einen Namen für eine neue Kategorie, beispielsweise „Projekt: Software-Engineering“ ein und bestätige die Kategorie durch die Schaltfläche „Kategorie erstellen“</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -207,12 +215,30 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    Frage 3
+                                    Ausstehende Vorschläge/Meldungen
                                 </button>
                             </h2>
                             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
                                 <div class="accordion-body">
-                                    Antwort 3
+                                    <ul>
+                                        <li>Ausstehende Vorschläge beziehen sich auf Fragen, die durch Nutzer vorgeschlagen wurden und in den Fragenkatalog mit aufgenommen werden könnten. Um dies zu bestätigen, wähle „akzeptieren“. Sollte der Vorschlag inkorrekt oder Fehlerhaft sein, so kannst du den Vorschlag „ablehnen“.</li>
+                                        <li>Ähnlich verhält es sich bei Ausstehenden Meldungen. Hier haben Nutzer eine Frage mit Auswahl einer Meldungskategorie gemeldet, um auf Fehler hinzuweisen. Prüfe die Meldung und verbessere die Antwortmöglichkeiten, speichere deine Änderung durch die entsprechende Schaltfläche oder lehne die Meldung ab, sollte der Nutzer Unrecht haben.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseThree">
+                                    Fragenstand bearbeiten
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Hier siehst du den gesamten Fragenkatalog und kannst entsprechende Anpassung an den Fragen und deren Antwortmöglichkeiten vornehmen.</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>

@@ -83,6 +83,8 @@ public class ScoreDAO {
                 "SELECT COUNT(DISTINCT s1.game.gameID) " +
                 "FROM Score s1 " +
                 "WHERE s1.user.userID = :userID " +
+                "AND s1.game.isFinished = true " +
+                "AND s1.game.isMultiplayer = true " +
                 "AND s1.score = (SELECT MAX(s2.score) FROM Score s2 WHERE s2.game = s1.game)", 
                 Long.class)
                 .setParameter("userID", userID)
@@ -91,6 +93,7 @@ public class ScoreDAO {
             return null;
         }
     }
+    
 
     //Get top 10 users and there amount of scores
     public List<Object[]> getTop10UsersByScoreCount() {
