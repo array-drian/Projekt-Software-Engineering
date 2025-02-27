@@ -8,6 +8,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import question.Question;
+import question.QuestionController;
+import question.QuestionDAO;
 
 
 @Named
@@ -18,6 +21,12 @@ public class CategoryController implements Serializable {
 
     @Inject
     private CategoryDAO categoryDAO;
+
+    @Inject
+    private QuestionDAO questionDAO;
+
+    @Inject
+    private QuestionController questionController;
 
     //Getter
 
@@ -44,9 +53,19 @@ public class CategoryController implements Serializable {
 
         deleteCategory.setIsActive(false);
 
+        for(Question question : deleteCategory.getQuestions()) {
+            Question deletedQuestion = questionDAO.merge(question);
+
+            deletedQuestion.setIsActive(false);
+
+            questionDAO.persist(deletedQuestion);
+        }
+
         categoryDAO.persist(deleteCategory);
 
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Kategorie wurde erfolgreich gelöscht.", null);
         FacesContext.getCurrentInstance().addMessage("deleteCategoryForm", msg);
+
+        questionController.loadQuestions();
     }
 }
