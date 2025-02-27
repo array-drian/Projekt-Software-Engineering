@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 
 @Named
 @RequestScoped 
@@ -92,6 +93,18 @@ public class UserDAO {
     public void persist(User user) {
         EntityTransaction tx = beginTransaction();
         try {
+            // Check if an active user with the same text already exists
+            if (user.getIsActive()) {
+                String jpql = "SELECT COUNT(u) FROM User u WHERE u.userName = :userName AND u.isActive = true";
+                Long count = entityManager.createQuery(jpql, Long.class)
+                    .setParameter("userName", user.getUserName())
+                    .getSingleResult();
+
+                if (count > 0) {
+                    throw new PersistenceException("Duplicate entry: A question with this text is already active!");
+                }
+            }
+
             entityManager.persist(user);
             tx.commit();
         }catch(RuntimeException e) {

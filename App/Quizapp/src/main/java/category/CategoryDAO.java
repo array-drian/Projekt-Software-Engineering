@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 
 @Named
 @RequestScoped 
@@ -77,6 +78,18 @@ public class CategoryDAO {
     public void persist(Category category) {
         EntityTransaction tx = beginTransaction();
         try {
+            // Check if an active category with the same text already exists
+            if (category.getIsActive()) {
+                String jpql = "SELECT COUNT(c) FROM Category c WHERE c.category = :category AND u.isActive = true";
+                Long count = entityManager.createQuery(jpql, Long.class)
+                    .setParameter("category", category.getCategory())
+                    .getSingleResult();
+
+                if (count > 0) {
+                    throw new PersistenceException("Duplicate entry: A question with this text is already active!");
+                }
+            }
+
             entityManager.persist(category);
             tx.commit();
         }catch(RuntimeException e) {

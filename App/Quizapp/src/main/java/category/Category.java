@@ -20,7 +20,6 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int categoryID;
 
-    @Column(nullable = false, unique = true)
     private String category;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -28,6 +27,9 @@ public class Category implements Serializable {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Quiz> quizzes = new ArrayList<>();
+
+    @Column(nullable = false)
+    private boolean isActive = true;
 
     //Constructor
 
@@ -56,9 +58,17 @@ public class Category implements Serializable {
         return this.quizzes;
     }
 
+    public boolean getIsActive() {
+        return this.isActive;
+    }
+
     //Setter
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }

@@ -11,6 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 
 @Named
 @RequestScoped 
@@ -96,14 +97,26 @@ public class QuestionDAO {
         }
     }    
 
-    //Persist an Entity
+    // Persist an Entity
     public void persist(Question question) {
         EntityTransaction tx = beginTransaction();
         try {
+            // Check if an active question with the same text already exists
+            if (question.getIsActive()) {
+                String jpql = "SELECT COUNT(q) FROM Question q WHERE q.question = :question AND q.isActive = true";
+                Long count = entityManager.createQuery(jpql, Long.class)
+                    .setParameter("question", question.getQuestion())
+                    .getSingleResult();
+
+                if (count > 0) {
+                    throw new PersistenceException("Duplicate entry: A question with this text is already active!");
+                }
+            }
+
             entityManager.persist(question);
             tx.commit();
-        }catch(RuntimeException e) {
-            if(tx.isActive()) tx.rollback();
+        } catch (RuntimeException e) {
+            if (tx.isActive()) tx.rollback();
             throw e;
         }
     }

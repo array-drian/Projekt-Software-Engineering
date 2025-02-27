@@ -104,7 +104,7 @@ public class QuestionBean implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich erstellt.", null);
             FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
         }catch (PersistenceException  e) {
-            if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
+            if (e.getMessage() != null && e.getMessage().contains("Duplicate entry")) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die frage existiert bereits.", null);
                 FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
             } else {

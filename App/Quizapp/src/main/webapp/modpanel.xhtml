@@ -160,9 +160,17 @@
       
                                     <h:column class="border-bottom">
                                         <f:facet name="header">Änderungen speichern</f:facet>
-                                        <h:commandButton value="Speichern" action="#{questionController.changeQuestion(question)}" class="btn btn-outline-primary me-2" />
+                                        <h:commandButton value="Speichern" action="#{questionController.changeQuestion(question)}" class="btn btn-outline-primary me-2">
+                                            <f:ajax render="@form questionsWrapper reportsWrapper" />
+                                        </h:commandButton>
                                     </h:column>
-              
+
+                                    <h:column class="border-bottom">
+                                        <f:facet name="header">Frage löschen</f:facet>
+                                        <h:commandButton value="Löschen" action="#{questionController.deleteQuestion(question)}" class="btn btn-outline-primary me-2">
+                                            <f:ajax render="@form questionsWrapper reportsWrapper" />
+                                        </h:commandButton>
+                                    </h:column>
                                 </h:dataTable>
                                 <h:messages for="editQuestionsForm" layout="table" class="text-danger" />
                             </h:form>

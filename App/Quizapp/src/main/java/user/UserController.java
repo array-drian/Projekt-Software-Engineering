@@ -88,7 +88,7 @@ public class UserController implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Nutzerdaten erfolgreich geändert.", null);
             FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
         }catch (PersistenceException  e) {
-            if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
+            if (e.getMessage() != null && e.getMessage().contains("Duplicate entry")) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nutzername wird bereits verwendet.", null);
                 FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
             } else {

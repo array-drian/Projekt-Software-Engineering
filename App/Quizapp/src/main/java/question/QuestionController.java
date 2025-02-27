@@ -49,7 +49,7 @@ public class QuestionController implements Serializable {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich bearbeitet.", null);
             FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);
         }catch (PersistenceException  e) {
-            if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
+            if (e.getMessage() != null && e.getMessage().contains("Duplicate entry")) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die frage existiert bereits.", null);
                 FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);
             } else {
@@ -57,5 +57,19 @@ public class QuestionController implements Serializable {
                 FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);
             }
         }
+    }
+
+    //Delete a Question
+    public void deleteQuestion(Question question) {
+        Question changedQuestion = questionDAO.merge(question);
+
+        changedQuestion.setIsActive(false);
+
+        questionDAO.persist(changedQuestion);
+
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich gelöscht.", null);
+        FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);
+
+        loadQuestions();
     }
 }
