@@ -80,7 +80,7 @@ public class CategoryDAO {
         try {
             // Check if an active category with the same text already exists
             if (category.getIsActive()) {
-                String jpql = "SELECT COUNT(c) FROM Category c WHERE c.category = :category AND u.isActive = true";
+                String jpql = "SELECT COUNT(c) FROM Category c WHERE c.category = :category AND c.isActive = true";
                 Long count = entityManager.createQuery(jpql, Long.class)
                     .setParameter("category", category.getCategory())
                     .getSingleResult();
