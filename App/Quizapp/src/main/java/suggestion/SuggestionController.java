@@ -82,7 +82,7 @@ public class SuggestionController implements Serializable {
             editedQuestion.setIsActive(true);
             questionDAO.persist(editedQuestion);
         }
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Der Vorschlag wurde akzeptiert.", null);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Der Vorschlag wurde akzeptiert.", null);
         FacesContext.getCurrentInstance().addMessage("suggestionsForm", msg);
         
         questionController.loadQuestions();
@@ -97,7 +97,7 @@ public class SuggestionController implements Serializable {
             editedSuggestion.setIsDenied(true);
             suggestionDAO.persist(editedSuggestion);
         }
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Der Vorschlag wurde abgelehnt.", null);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Der Vorschlag wurde abgelehnt.", null);
         FacesContext.getCurrentInstance().addMessage("suggestionsForm", msg);
 
         acceptedOrDeclined();

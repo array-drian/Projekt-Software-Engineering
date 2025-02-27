@@ -155,7 +155,7 @@ public class QuizController implements Serializable {
 
         questionDAO.persist(question);
     
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Deine Meldung war erfolgreich.", null);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Deine Meldung war erfolgreich.", null);
         FacesContext.getCurrentInstance().addMessage("quizForm", msg);
 
         this.reportCurrentQuestion = false;

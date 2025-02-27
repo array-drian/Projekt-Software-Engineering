@@ -22,6 +22,7 @@ public class User implements Serializable
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userID;
 
+    @Column(nullable = false, unique = true)
     private String userName;
 
     private String userPass;

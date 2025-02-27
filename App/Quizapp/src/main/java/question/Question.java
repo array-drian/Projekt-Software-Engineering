@@ -27,6 +27,7 @@ public class Question implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int questionID;
 
+    @Column(nullable = false, unique = true)
     private String question;
 
     @OneToMany(mappedBy = "belongsTo", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -19,10 +19,10 @@ public class App implements Serializable {
     private UserDAO userDAO;
 
     //Return a hashed Password
-    public String hashPassword(String name, String pass, String salt) {
+    public String hashPassword(String pass, String salt) {
         try {
             MessageDigest digester = MessageDigest.getInstance("SHA-512");
-            byte[] hashBytes = digester.digest((name + pass + salt)
+            byte[] hashBytes = digester.digest((pass + salt)
                 .getBytes(StandardCharsets.UTF_8));
             return new String(Base64.getEncoder().encode(hashBytes));
         } catch(Exception e) {
@@ -32,7 +32,7 @@ public class App implements Serializable {
 
     //Validate Username and Password
     public void validateUsernameAndPassword(CurrentUser currentUser, String userName, String userPass, String salt) {
-        String passHash = hashPassword(userName, userPass, salt);
+        String passHash = hashPassword(userPass, salt);
         currentUser.reset();
         User user = userDAO.getUserByNameAndPassword(userName, passHash);
         if(user != null && user.getIsActive()) {

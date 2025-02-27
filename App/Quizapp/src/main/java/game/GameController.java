@@ -94,7 +94,7 @@ public class GameController implements Serializable {
             joinedGame.getUsers().add(currentUser.getUser());
             gameDAO.persist(joinedGame);
 
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Du bist dem Spiel beigetreten.", null);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Du bist dem Spiel beigetreten.", null);
             FacesContext.getCurrentInstance().addMessage("joinGameForm", msg);
 
             loadGames();

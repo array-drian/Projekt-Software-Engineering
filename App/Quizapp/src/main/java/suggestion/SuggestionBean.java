@@ -12,6 +12,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.persistence.PersistenceException;
 import question.Question;
 import user.CurrentUser;
 import user.User;
@@ -114,8 +115,19 @@ public class SuggestionBean implements Serializable {
         }
     
         category.getQuestions().add(newQuestion);
-        categoryDAO.persist(category);
-    
+        
+        try {
+            categoryDAO.persist(category);
+        }catch (PersistenceException  e) {
+            if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die frage existiert bereits.", null);
+                FacesContext.getCurrentInstance().addMessage("submitSuggestionForm", msg);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ein Fehler ist beim Speichern aufgetreten.", null);
+                FacesContext.getCurrentInstance().addMessage("submitSuggestionForm", msg);
+            }
+        }
+
         Suggestion suggestion = new Suggestion(newQuestion, user);
         suggestionDAO.persist(suggestion);
     

@@ -8,6 +8,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.persistence.PersistenceException;
 import other.App;
 
 @Named
@@ -61,7 +62,7 @@ public class UserController implements Serializable {
 
     //Updates a user
     public void saveUser(User user) {
-        String hashedInputPassword = app.hashPassword(user.getUserName(), this.tempPassword, loginController.getSalt());
+        String hashedInputPassword = app.hashPassword(this.tempPassword, loginController.getSalt());
 
         if(!user.getUserPass().equals(hashedInputPassword)) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Dein altes Passwort ist falsch.", null);
@@ -75,20 +76,31 @@ public class UserController implements Serializable {
             return;
         }
 
-        user.setUserPass(app.hashPassword(user.getUserName(), this.newPassword, loginController.getSalt()));
+        if(this.newPassword != null && !this.newPassword.isEmpty()) {
+            user.setUserPass(app.hashPassword(this.newPassword, loginController.getSalt()));
+        }
 
         User changedUser = userDAO.merge(user);
 
-        userDAO.persist(changedUser);
+        try {
+            userDAO.persist(changedUser);
 
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nutzerdaten erfolgreich geändert.", null);
-        FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
-        
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Nutzerdaten erfolgreich geändert.", null);
+            FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
+        }catch (PersistenceException  e) {
+            if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nutzername wird bereits verwendet.", null);
+                FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ein Fehler ist beim Speichern aufgetreten.", null);
+                FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
+            }
+        }
     }
 
     //"Deletes" a user by setting it inactive
     public void deleteUser(User user) {
-        String hashedInputPassword = app.hashPassword(user.getUserName(), this.tempPassword, loginController.getSalt());
+        String hashedInputPassword = app.hashPassword(this.tempPassword, loginController.getSalt());
 
         if(!user.getUserPass().equals(hashedInputPassword)) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Dein altes Passwort ist falsch.", null);
@@ -102,7 +114,7 @@ public class UserController implements Serializable {
 
         userDAO.persist(deletedUser);
 
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nutzer erfolgreich gelöscht.", null);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Nutzer erfolgreich gelöscht.", null);
         FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
         
         FacesContext fc = FacesContext.getCurrentInstance();

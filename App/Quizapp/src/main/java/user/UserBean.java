@@ -6,7 +6,9 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.persistence.PersistenceException;
 import other.App;
+
 
 @Named
 @ViewScoped
@@ -59,11 +61,21 @@ public class UserBean implements Serializable{
     
     //Save the current user to the Database
     public void saveToDatabase() {
-        String hashedPass = app.hashPassword(userName, userPass, loginController.getSalt());
+        String hashedPass = app.hashPassword(userPass, loginController.getSalt());
         User newUser = new User(userName, hashedPass, isMod);
-        userDAO.persist(newUser);
+        try {
+            userDAO.persist(newUser);
 
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Dein Konto wurde erstellt.", null);
-        FacesContext.getCurrentInstance().addMessage("registrationForm", msg);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Dein Konto wurde erstellt.", null);
+            FacesContext.getCurrentInstance().addMessage("registrationForm", msg);
+        }catch (PersistenceException  e) {
+            if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nutzername wird bereits verwendet.", null);
+                FacesContext.getCurrentInstance().addMessage("registrationForm", msg);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ein Fehler ist beim Speichern aufgetreten.", null);
+                FacesContext.getCurrentInstance().addMessage("registrationForm", msg);
+            }
+        }
     }
 }

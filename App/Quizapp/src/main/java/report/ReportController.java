@@ -73,7 +73,7 @@ public class ReportController implements Serializable {
 
         questionDAO.persist(changedQuestion);
 
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die Frage wurde erfolgreich bearbeitet.", null);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich bearbeitet.", null);
         FacesContext.getCurrentInstance().addMessage("reportsForm", msg);
 
         questionController.loadQuestions();
@@ -83,7 +83,7 @@ public class ReportController implements Serializable {
 
     //Decline a Report
     public void declineReport() {
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die Meldung wurde abgelehnt.", null);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Meldung wurde abgelehnt.", null);
         FacesContext.getCurrentInstance().addMessage("reportsForm", msg);
 
         settleReport();

@@ -112,7 +112,7 @@ public class QuizBean implements Serializable {
         newGame.getUsers().add(user);
         gameDAO.persist(newGame);
 
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Das Quiz wurde erfolgreich erstellt.", null);
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Das Quiz wurde erfolgreich erstellt.", null);
         FacesContext.getCurrentInstance().addMessage("createQuizForm", msg);
     }
 }

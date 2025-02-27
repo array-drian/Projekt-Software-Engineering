@@ -12,6 +12,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.persistence.PersistenceException;
 
 @Named
 @ViewScoped
@@ -97,10 +98,20 @@ public class QuestionBean implements Serializable {
         }
     
         category.getQuestions().add(newQuestion);
-        categoryDAO.persist(category);
+        try {
+            categoryDAO.persist(category);
     
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die Frage wurde erfolgreich erstellt.", null);
-        FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich erstellt.", null);
+            FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
+        }catch (PersistenceException  e) {
+            if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die frage existiert bereits.", null);
+                FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
+            } else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ein Fehler ist beim Speichern aufgetreten.", null);
+                FacesContext.getCurrentInstance().addMessage("createQuestionsForm", msg);
+            }
+        }
 
         questionController.loadQuestions();
     }
