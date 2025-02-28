@@ -16,7 +16,6 @@ import jakarta.persistence.PersistenceException;
 import question.Question;
 import question.QuestionDAO;
 import user.CurrentUser;
-import user.User;
 
 @Named
 @ViewScoped
@@ -95,13 +94,6 @@ public class SuggestionBean implements Serializable {
 
     //Submit a suggestion
     public void submitSuggestion() {
-        User user = currentUser.getUser();
-        if(user == null) {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Du bist nicht eingeloggt.", null);
-            FacesContext.getCurrentInstance().addMessage("submitSuggestionForm", msg);
-            return;
-        }
-    
         if(question == null || question.trim().isEmpty() || category == null || correctAnswer.trim().isEmpty() || answers.size() != 3) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Deine Eingaben sind ungültig.", null);
             FacesContext.getCurrentInstance().addMessage("submitSuggestionForm", msg);
@@ -109,6 +101,12 @@ public class SuggestionBean implements Serializable {
         }
     
         Question newQuestion = new Question(question, category);
+
+        if(questionDAO.checkQuestion(newQuestion) > 0) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die frage existiert bereits.", null);
+            FacesContext.getCurrentInstance().addMessage("submitSuggestionForm", msg);
+            return;
+        }
     
         Answer newCorrectAnswer = new Answer(correctAnswer, newQuestion, true);
         newQuestion.getAnswers().add(newCorrectAnswer);
@@ -132,7 +130,7 @@ public class SuggestionBean implements Serializable {
             }
         }
 
-        Suggestion suggestion = new Suggestion(newQuestion, user);
+        Suggestion suggestion = new Suggestion(newQuestion, currentUser.getUser());
         
         suggestionDAO.persist(suggestion);
     

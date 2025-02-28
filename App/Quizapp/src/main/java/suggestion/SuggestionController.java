@@ -74,6 +74,12 @@ public class SuggestionController implements Serializable {
     //Accepts a Suggestion
     public void acceptSuggestion() {
         if(this.suggestion != null) {
+            if(questionDAO.checkQuestion(this.suggestion.getQuestion()) > 0) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die frage existiert bereits.", null);
+                FacesContext.getCurrentInstance().addMessage("suggestionsForm", msg);
+                return;
+            }
+            
             this.suggestion.setIsAccepted(true);
             
             Suggestion editedSuggestion = suggestionDAO.merge(this.suggestion);

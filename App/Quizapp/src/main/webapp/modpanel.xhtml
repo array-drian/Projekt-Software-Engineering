@@ -86,8 +86,11 @@
                             <h:form id="suggestionsForm">
                                 <p><h3 class="text-center">Ausstehende Vorschläge</h3></p>
     
-                                <p><h:outputLabel for="questionInput" value="Frage: " /></p>
-                                <p><h:outputText id="questionInput" value="#{suggestionController.suggestion.question.question}" /></p>
+                                <p><h:outputLabel for="question" value="Frage: " /></p>
+                                <p><h:outputText id="question" value="#{suggestionController.suggestion.question.question}" /></p>
+
+                                <p><h:outputLabel for="category" value="Kategorie: " /></p>
+                                <p><h:outputText id="category" value="#{suggestionController.suggestion.question.category.category}" /></p>
     
                                 <p><h:outputLabel for="rightAnswer" value="Richtige Antwort:" /></p>
                                 <p><h:outputText id="rightAnswer" value="#{suggestionController.suggestion.question.answers[0].answer}" /></p>
