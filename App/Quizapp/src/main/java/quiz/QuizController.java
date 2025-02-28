@@ -18,6 +18,7 @@ import jakarta.inject.Named;
 import question.Question;
 import question.QuestionDAO;
 import report.Report;
+import report.ReportDAO;
 import score.Score;
 import user.CurrentUser;
 
@@ -52,6 +53,9 @@ public class QuizController implements Serializable {
 
     @Inject
     private QuestionDAO questionDAO;
+
+    @Inject
+    private ReportDAO reportDAO;
 
     @PostConstruct
     public void init() {
@@ -149,11 +153,12 @@ public class QuizController implements Serializable {
     public void reportQuestion() {
         Report newReport = new Report(this.question, currentUser.getUser(), this.message);
     
+        
         question = questionDAO.merge(question);
 
         question.getReports().add(newReport);
 
-        questionDAO.persist(question);
+        reportDAO.persist(newReport);
     
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Deine Meldung war erfolgreich.", null);
         FacesContext.getCurrentInstance().addMessage("quizForm", msg);

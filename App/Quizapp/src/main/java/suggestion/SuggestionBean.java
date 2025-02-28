@@ -122,9 +122,6 @@ public class SuggestionBean implements Serializable {
         
         try {
             questionDAO.persist(newQuestion);
-
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich eingereicht.", null);
-            FacesContext.getCurrentInstance().addMessage("submitSuggestionForm", msg);
         }catch (PersistenceException  e) {
             if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die frage existiert bereits.", null);
