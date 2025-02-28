@@ -50,7 +50,7 @@ public class CheckerController implements Serializable {
         }else if(!currentUser.getUser().getIsMod()) {
             FacesContext fc = FacesContext.getCurrentInstance();
             NavigationHandler nh = fc.getApplication().getNavigationHandler();
-            nh.handleNavigation(fc, null, "app.xhtml?faces-redirect=true");
+            nh.handleNavigation(fc, null, "quiz.xhtml?faces-redirect=true");
         }
     }
 

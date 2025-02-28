@@ -93,7 +93,7 @@ public class LoginController implements Serializable {
         if(currentUser.getUser().getIsMod()) {
             return "modpanel.xhtml?faces-redirect=true";
         }else if(!currentUser.getUser().getIsMod()) {
-            return "app.xhtml?faces-redirect=true";
+            return "quiz.xhtml?faces-redirect=true";
         }else {
             return "";
         }
