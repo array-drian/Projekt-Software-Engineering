@@ -71,8 +71,6 @@ public class ReportController implements Serializable {
     public void changeQuestion() {
         Question changedQuestion = questionDAO.merge(this.report.getQuestion());
 
-        questionDAO.persist(changedQuestion);
-
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich bearbeitet.", null);
         FacesContext.getCurrentInstance().addMessage("reportsForm", msg);
 

@@ -58,10 +58,10 @@ public class CategoryController implements Serializable {
 
             deletedQuestion.setIsActive(false);
 
-            questionDAO.persist(deletedQuestion);
+            questionDAO.merge(deletedQuestion);
         }
 
-        categoryDAO.persist(deleteCategory);
+        categoryDAO.merge(deleteCategory);
 
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Kategorie wurde erfolgreich gelöscht.", null);
         FacesContext.getCurrentInstance().addMessage("deleteCategoryForm", msg);

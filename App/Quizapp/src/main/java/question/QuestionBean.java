@@ -101,6 +101,7 @@ public class QuestionBean implements Serializable {
         }
     
         category.getQuestions().add(newQuestion);
+        
         try {
             questionDAO.persist(newQuestion);
     

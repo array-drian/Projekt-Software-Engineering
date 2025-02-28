@@ -8,7 +8,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.persistence.PersistenceException;
 import other.App;
 
 @Named
@@ -80,22 +79,17 @@ public class UserController implements Serializable {
             user.setUserPass(app.hashPassword(this.newPassword, loginController.getSalt()));
         }
 
+        if(userDAO.checkUsername(user) > 0) {
+            user.setUserName(userDAO.getUserAtIndex(user.getUserID()).getUserName());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nutzername wird bereits verwendet.", null);
+            FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
+            return;
+        }
+
         User changedUser = userDAO.merge(user);
 
-        try {
-            userDAO.persist(changedUser);
-
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Nutzerdaten erfolgreich geändert.", null);
-            FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
-        }catch (PersistenceException  e) {
-            if (e.getMessage() != null && e.getMessage().contains("Duplicate entry")) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nutzername wird bereits verwendet.", null);
-                FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
-            } else {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ein Fehler ist beim Speichern aufgetreten.", null);
-                FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
-            }
-        }
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Nutzerdaten erfolgreich geändert.", null);
+        FacesContext.getCurrentInstance().addMessage("editUserForm", msg);
     }
 
     //"Deletes" a user by setting it inactive
@@ -108,11 +102,9 @@ public class UserController implements Serializable {
             return;
         }
 
+        user.setIsActive(false);
+
         User deletedUser = userDAO.merge(user);
-
-        deletedUser.setIsActive(false);
-
-        userDAO.persist(deletedUser);
 
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Nutzer erfolgreich gelöscht.", null);
         FacesContext.getCurrentInstance().addMessage("editUserForm", msg);

@@ -65,9 +65,9 @@ public class ReportDAO {
     public Report merge(Report report) {
         EntityTransaction tx = beginTransaction();
         try {
-            Report managedReport = entityManager.merge(report); // Store the managed instance
+            Report managedReport = entityManager.merge(report);
             tx.commit();
-            return managedReport; // Return the managed entity
+            return managedReport;
         }catch(RuntimeException e) {
             if(tx.isActive()) tx.rollback();
             throw e;

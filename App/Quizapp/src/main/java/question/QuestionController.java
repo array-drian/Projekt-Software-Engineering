@@ -9,7 +9,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.persistence.PersistenceException;
 
 
 @Named
@@ -41,31 +40,31 @@ public class QuestionController implements Serializable {
 
     //Change a Question
     public void changeQuestion(Question question) {
+        if(questionDAO.checkQuestion(question) > 0) {
+            Question revertQuestion = questionDAO.getQuestionAtIndex(question.getQuestionID());
+
+            question.setQuestion(revertQuestion.getQuestion());
+
+            for (int i = 0; i < Math.min(question.getAnswers().size(), revertQuestion.getAnswers().size()); i++) {
+                question.getAnswers().get(i).setAnswer(revertQuestion.getAnswers().get(i).getAnswer());
+            }
+
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die frage existiert bereits.", null);
+            FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);
+            return;
+        }
+
         Question changedQuestion = questionDAO.merge(question);
 
-        try {
-            questionDAO.persist(changedQuestion);
-    
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich bearbeitet.", null);
-            FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);
-        }catch (PersistenceException  e) {
-            if (e.getMessage() != null && e.getMessage().contains("Duplicate entry")) {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die frage existiert bereits.", null);
-                FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);
-            } else {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ein Fehler ist beim Speichern aufgetreten.", null);
-                FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);
-            }
-        }
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich bearbeitet.", null);
+        FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);
     }
 
     //Delete a Question
     public void deleteQuestion(Question question) {
+        question.setIsActive(false);
+
         Question deletedQuestion = questionDAO.merge(question);
-
-        deletedQuestion.setIsActive(false);
-
-        questionDAO.persist(deletedQuestion);
 
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Die Frage wurde erfolgreich gelöscht.", null);
         FacesContext.getCurrentInstance().addMessage("editQuestionsForm", msg);

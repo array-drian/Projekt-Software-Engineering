@@ -68,6 +68,17 @@ public class UserDAO {
             .getResultList();
     }
 
+    //Check if a Username is already taken
+    public Long checkUsername(User user) {
+        try {
+            return entityManager.createQuery("SELECT COUNT(u) FROM User u WHERE u.userName = :userName AND u.isActive = true", Long.class)
+                .setParameter("userName", user.getUserName())
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
+    }
+
     //Create a transaction
     public EntityTransaction beginTransaction() {
         if(!entityManager.getTransaction().isActive()) {
@@ -94,13 +105,8 @@ public class UserDAO {
         EntityTransaction tx = beginTransaction();
         try {
             // Check if an active user with the same text already exists
-            if (user.getIsActive()) {
-                String jpql = "SELECT COUNT(u) FROM User u WHERE u.userName = :userName AND u.isActive = true";
-                Long count = entityManager.createQuery(jpql, Long.class)
-                    .setParameter("userName", user.getUserName())
-                    .getSingleResult();
-
-                if (count > 0) {
+            if(user.getIsActive()) {
+                if (checkUsername(user) > 0) {
                     throw new PersistenceException("Duplicate entry: A question with this text is already active!");
                 }
             }

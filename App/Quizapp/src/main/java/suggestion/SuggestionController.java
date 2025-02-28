@@ -74,13 +74,13 @@ public class SuggestionController implements Serializable {
     //Accepts a Suggestion
     public void acceptSuggestion() {
         if(this.suggestion != null) {
+            this.suggestion.setIsAccepted(true);
+            
             Suggestion editedSuggestion = suggestionDAO.merge(this.suggestion);
-            editedSuggestion.setIsAccepted(true);
-            suggestionDAO.persist(editedSuggestion);
+
+            this.suggestion.getQuestion().setIsActive(true);
 
             Question editedQuestion = questionDAO.merge(this.suggestion.getQuestion());
-            editedQuestion.setIsActive(true);
-            questionDAO.persist(editedQuestion);
         }
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Der Vorschlag wurde akzeptiert.", null);
         FacesContext.getCurrentInstance().addMessage("suggestionsForm", msg);

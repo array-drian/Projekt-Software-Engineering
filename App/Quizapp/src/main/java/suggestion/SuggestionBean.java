@@ -133,6 +133,7 @@ public class SuggestionBean implements Serializable {
         }
 
         Suggestion suggestion = new Suggestion(newQuestion, user);
+        
         suggestionDAO.persist(suggestion);
     
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Dein Vorschlag wurde eingereicht.", null);

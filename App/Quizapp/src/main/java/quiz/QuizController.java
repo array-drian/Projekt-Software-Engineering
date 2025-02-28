@@ -153,12 +153,9 @@ public class QuizController implements Serializable {
     public void reportQuestion() {
         Report newReport = new Report(this.question, currentUser.getUser(), this.message);
     
-        
-        question = questionDAO.merge(question);
-
         question.getReports().add(newReport);
 
-        reportDAO.persist(newReport);
+        question = questionDAO.merge(question);
     
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Deine Meldung war erfolgreich.", null);
         FacesContext.getCurrentInstance().addMessage("quizForm", msg);
@@ -182,8 +179,6 @@ public class QuizController implements Serializable {
         }
         
         Game updatedGame = gameDAO.merge(currentGame.getGame());
-
-        gameDAO.persist(updatedGame);
 
         currentGame.reset();
 

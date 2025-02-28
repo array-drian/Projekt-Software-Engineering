@@ -76,6 +76,17 @@ public class QuestionDAO {
             .getResultList();
     }
 
+    //Check if a Username is already taken
+    public Long checkQuestion(Question question) {
+        try {
+            return entityManager.createQuery("SELECT COUNT(q) FROM Question q WHERE q.question = :question AND q.isActive = true", Long.class)
+                .setParameter("question", question.getQuestion())
+                .getSingleResult();
+        }catch(NoResultException e) {
+            return null;
+        }
+    }
+
     //Create a transaction
     public EntityTransaction beginTransaction() {
         if(!entityManager.getTransaction().isActive()) {
@@ -103,12 +114,7 @@ public class QuestionDAO {
         try {
             // Check if an active question with the same text already exists
             if (question.getIsActive()) {
-                String jpql = "SELECT COUNT(q) FROM Question q WHERE q.question = :question AND q.isActive = true";
-                Long count = entityManager.createQuery(jpql, Long.class)
-                    .setParameter("question", question.getQuestion())
-                    .getSingleResult();
-
-                if (count > 0) {
+                if (checkQuestion(question) > 0) {
                     throw new PersistenceException("Duplicate entry: A question with this text is already active!");
                 }
             }
