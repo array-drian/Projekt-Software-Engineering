@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+    </h:head>
+    <h:body>
+        <div class="container">
+            <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <a href="" class="d-inline-flex link-body-emphasis text-decoration-none">Quizapp</a>
+                </div>
+        
+                <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                    <h:panelGroup rendered="#{currentUser.user.isMod}">
+                        <li><a href="modpanel.xhtml" class="nav-link px-2">Modpanel</a></li>
+                    </h:panelGroup>
+                    <li><a href="quiz.xhtml" class="nav-link px-2">Spielen</a></li>
+                    <h:panelGroup rendered="#{not currentUser.user.isMod}">
+                        <li><a href="app.xhtml" class="nav-link px-2">Frage einreichen</a></li>
+                    </h:panelGroup>
+                    <li><a href="user.xhtml" class="nav-link px-2">Nutzerbereich</a></li>
+                </ul>
+        
+                <div class="col-md-3 text-end d-flex align-items-center">
+                    <h:panelGroup rendered="#{not empty currentUser.user}">
+                        <span class="welcome-header">Willkommen, #{currentUser.user.userName}!</span>
+                    </h:panelGroup>
+                    <h:form>
+                        <h:commandButton action="#{loginController.logout}" value="Ausloggen" class="btn btn-primary" />
+                    </h:form>
+                </div>
+            </header>
+        </div>
+    </h:body>
+</html>

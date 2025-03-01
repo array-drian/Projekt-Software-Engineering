@@ -1,0 +1,307 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Quiz</title>
+        <f:metadata>
+            <f:viewAction action="#{checkerController.checkLogin()}" />
+        </f:metadata>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+        <h:outputStylesheet library="css" name="main.css"/>
+    </h:head>
+    <h:body class="min-vh-100">
+        <!-- Include Navbar -->
+        <ui:include src="navbar.xhtml" />
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                    <p><h2>Quiz</h2></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                    <h:form id="createQuizForm">
+                        <p><h3>Neues Quiz erstellen</h3></p>
+                        <p><h:outputLabel for="category" value="Kategorie:" /></p>
+                        <p><h:selectOneMenu id="category" value="#{quizBean.category}" converter="#{categoryConverter}" styleClass="form-select">
+                            <f:selectItems value="#{quizBean.allCategories}" var="cat" itemLabel="#{cat.category}" itemValue="#{cat}" />
+                        </h:selectOneMenu></p>
+
+                        <p><h:outputLabel for="isMultiplayer" value="Mehrspielermodus aktivieren?" /></p>
+                        <p><h:selectOneRadio id="isMultiplayer" value="#{quizBean.isMultiplayer}" styleClass="radio-group">
+                            <f:selectItem itemValue="true" itemLabel="Ja" />
+                            <f:selectItem itemValue="false" itemLabel="Nein" />
+                            <f:ajax render="@form" />
+                        </h:selectOneRadio></p>
+    
+                        <h:panelGroup rendered="#{quizBean.isMultiplayer}">
+                            <p><h:outputLabel for="maxPlayers" value="Spieleranzahl:" /></p>
+                            <p><h:selectOneMenu id="maxPlayers" value="#{quizBean.maxPlayers}" styleClass="form-select">
+                                <f:selectItem itemValue="2" itemLabel="2 Spieler" />
+                                <f:selectItem itemValue="4" itemLabel="4 Spieler" />
+                                <f:convertNumber integerOnly="true" />
+                            </h:selectOneMenu></p>
+                        </h:panelGroup>
+
+                        <p><h:commandButton value="Quiz erstellen" action="#{gameController.createGame}" class="btn btn-outline-primary me-2">
+                            <f:ajax execute="@form" render="@form gameWrapper" />
+                        </h:commandButton></p>
+                        <h:messages for="createQuizForm" layout="table" class="text-danger" />
+                    </h:form>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 justify-content-center">
+                        <h:panelGroup id="gameWrapper">
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                                    <p><h3>Ausstehende Spiele</h3></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <h:panelGroup rendered="#{empty gameController.pendingSingleplayerGames and 
+                                                          empty gameController.pendingMultiplayerGames and 
+                                                          empty gameController.waitingMultiplayerGamesWithoutUser and 
+                                                          empty gameController.waitingMultiplayerGamesForUser}">
+                                    <div class="col-md-12 d-flex justify-content-center align-items-center">
+                                        <p><h4>Du hast keine ausstehenden Spiele</h4></p>
+                                    </div>
+                                </h:panelGroup>
+                            </div>
+                            <div class="row">
+                                <h:panelGroup rendered="#{not empty gameController.pendingSingleplayerGames}">
+                                    <div class="col-md-12 d-flex justify-content-center align-items-center">
+                                        <p><h4>Einzelspieler Spiele</h4></p>
+                                        </div>
+                                </h:panelGroup>
+                            </div>
+                            <div class="row">
+                                <h:panelGroup rendered="#{not empty gameController.pendingSingleplayerGames}">
+                                    <div class="col-md-12">
+                                        <h:panelGroup rendered="#{not empty gameController.pendingSingleplayerGames}">
+                                            <h:form id="playSinglePlayerForm">
+                                                <p><h5>Bereit zu spielen</h5></p>
+                                                <h:dataTable value="#{gameController.pendingSingleplayerGames}" var="game" class="table">
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Game ID</f:facet>
+                                                        <h:outputText value="#{game.gameID}" />
+                                                    </h:column>
+            
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Kategorie</f:facet>
+                                                        <h:outputText value="#{game.quiz.category.category}" />
+                                                    </h:column>
+        
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Jetzt Spielen</f:facet>
+                                                        <h:commandButton value="Jetzt spielen" action="#{gameController.playGame(game)}" class="btn btn-outline-primary me-2" />
+                                                    </h:column>
+                                                </h:dataTable>
+                                            </h:form>
+                                        </h:panelGroup>
+                                    </div>
+                                </h:panelGroup>
+                            </div>
+                                
+                            <div class="row">
+                                <h:panelGroup rendered="#{not empty gameController.pendingMultiplayerGames or 
+                                                          not empty gameController.waitingMultiplayerGamesForUser}">
+                                    <div class="col-md-12 d-flex justify-content-center align-items-center">
+                                        <p><h4>Mehrspieler Spiele</h4></p>
+                                        </div>
+                                </h:panelGroup>
+                            </div>
+                            <div class="row">
+                                <h:panelGroup rendered="#{not empty gameController.pendingMultiplayerGames}">
+                                    <div class="col-md-12">
+                                        <h:panelGroup rendered="#{not empty gameController.pendingMultiplayerGames}">
+                                            <h:form id="playMultiplayerForm">
+                                                <p><h5>Bereit zu spielen</h5></p>
+                                                <h:dataTable value="#{gameController.pendingMultiplayerGames}" var="game" class="table">
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Game ID</f:facet>
+                                                        <h:outputText value="#{game.gameID}" />
+                                                    </h:column>
+            
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Kategorie</f:facet>
+                                                        <h:outputText value="#{game.quiz.category.category}" />
+                                                    </h:column>
+            
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Jetzt Spielen</f:facet>
+                                                        <h:commandButton value="Jetzt spielen" action="#{gameController.playGame(game)}" class="btn btn-outline-primary me-2" />
+                                                    </h:column>
+                                                </h:dataTable>
+                                            </h:form>
+                                        </h:panelGroup>
+                                    </div>
+                                </h:panelGroup>
+                            </div>
+                            <div class="row">
+                                <h:panelGroup rendered="#{not empty gameController.waitingMultiplayerGamesForUser}">
+                                    <div class="col-md-12">
+                                        <h:panelGroup rendered="#{not empty gameController.waitingMultiplayerGamesForUser}">
+                                            <form>
+                                                <p><h5>Warten auf Spieler</h5></p>
+                                                <h:dataTable value="#{gameController.waitingMultiplayerGamesForUser}" var="game" class="table">
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Game ID</f:facet>
+                                                        <h:outputText value="#{game.gameID}" />
+                                                    </h:column>
+                                    
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Kategorie</f:facet>
+                                                        <h:outputText value="#{game.quiz.category.category}" />
+                                                    </h:column>
+                                                </h:dataTable>
+                                            </form>
+                                        </h:panelGroup>
+                                    </div>
+                                </h:panelGroup>
+                            </div>
+                            <div class="row">
+                                <h:panelGroup rendered="#{not empty gameController.waitingMultiplayerGamesWithoutUser}">
+                                    <div class="col-md-12">
+                                        <h:panelGroup rendered="#{not empty gameController.waitingMultiplayerGamesWithoutUser}">
+                                            <h:form id="joinGameForm">
+                                                <p><h5>Spiele denen du beitreten kannst</h5></p>
+                                                <h:dataTable value="#{gameController.waitingMultiplayerGamesWithoutUser}" var="game" class="table">
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Game ID</f:facet>
+                                                        <h:outputText value="#{game.gameID}" />
+                                                    </h:column>
+        
+                                                    <h:column class="border-bottom align-middle">
+                                                        <f:facet name="header">Kategorie</f:facet>
+                                                        <h:outputText value="#{game.quiz.category.category}" />
+                                                    </h:column>
+            
+                                                    <h:column class="border-botton align-middle">
+                                                        <f:facet name="header">Jetzt beitreten</f:facet>
+                                                        <h:commandButton value="Jetzt beitreten" action="#{gameController.joinGame(game)}" class="btn btn-outline-primary me-2">
+                                                            <f:ajax render="gameWrapper" />
+                                                        </h:commandButton>
+                                                    </h:column>
+                                                </h:dataTable>
+                                                <h:messages for="joinGameForm" layout="table" class="text-danger" />
+                                            </h:form>
+                                        </h:panelGroup>
+                                    </div>
+                                </h:panelGroup>
+                            </div>
+                        </h:panelGroup>
+                    </div>
+                    <div class="col-md-6 justify-content-center">
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center align-items-center">
+                                <p><h3>Rangliste</h3></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h:panelGroup rendered="#{empty leaderboardController.top10UsersByScoreCount and
+                                                      empty leaderboardController.top10UsersByTotalScore}">
+                                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                                    <p><h4>Es hat noch niemand gespielt</h4></p>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+                        <div class="row">
+                            <h:panelGroup rendered="#{not empty leaderboardController.top10UsersByScoreCount}">
+                                <div class="col-md-12">
+                                    <form>
+                                        <p><h4>Diese Spieler haben die meisten Spiele gespielt</h4></p>
+                                        <h:dataTable value="#{leaderboardController.top10UsersByScoreCount}" var="var" class="table">
+                                            <h:column class="border-bottom align-middle">
+                                                <f:facet name="header">Benutzer</f:facet>
+                                                <h:outputText value="#{var[0]}" />
+                                            </h:column>
+                    
+                                            <h:column class="border-bottom align-middle">
+                                                <f:facet name="header">Anzahl an Spielen</f:facet>
+                                                <h:outputText value="#{var[1]}" />
+                                            </h:column>
+                                        </h:dataTable>
+                                    </form>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+                        <div class="row">
+                            <h:panelGroup rendered="#{not empty leaderboardController.top10UsersByTotalScore}">
+                                <div class="col-md-12">
+                                    <form>
+                                        <p><h4>Diese Spieler haben die meisten Fragen richtig beantwortet</h4></p>
+                                        <h:dataTable value="#{leaderboardController.top10UsersByTotalScore}" var="var" class="table">
+                                            <h:column class="border-bottom align-middle">
+                                                <f:facet name="header">Benutzer</f:facet>
+                                                <h:outputText value="#{var[0]}" />
+                                            </h:column>
+            
+                                            <h:column class="border-bottom align-middle">
+                                                <f:facet name="header">Anzahl an richtig beantworter Fragen</f:facet>
+                                                <h:outputText value="#{var[1]}" />
+                                            </h:column>
+                                        </h:dataTable>
+                                    </form>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                    <p><h2>Häufig gestellte Fragen (FAQ)</h2></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-center">
+                    <div class="accordion w-50" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Frage 1
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Antwort 1
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Frage 2
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Antwort 2
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Frage 3
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Antwort 3
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </h:body>
+</html>
