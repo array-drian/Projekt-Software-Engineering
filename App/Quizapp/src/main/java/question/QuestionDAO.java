@@ -79,13 +79,20 @@ public class QuestionDAO {
     //Check if a Username is already taken
     public Long checkQuestion(Question question) {
         try {
-            return entityManager.createQuery("SELECT COUNT(q) FROM Question q WHERE q.question = :question AND q.isActive = true", Long.class)
-                .setParameter("question", question.getQuestion())
-                .getSingleResult();
-        }catch(NoResultException e) {
+            return entityManager.createQuery(
+                "SELECT COUNT(q) FROM Question q " +
+                "WHERE q.question = :question " +
+                "AND q.isActive = true " +
+                "AND q.questionID <> :questionID",
+                Long.class)
+            .setParameter("question", question.getQuestion())
+            .setParameter("questionID", question.getQuestionID())
+            .getSingleResult();
+        } catch (NoResultException e) {
             return null;
         }
     }
+    
 
     //Create a transaction
     public EntityTransaction beginTransaction() {

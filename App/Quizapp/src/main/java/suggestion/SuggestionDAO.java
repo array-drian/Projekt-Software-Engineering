@@ -66,9 +66,9 @@ public class SuggestionDAO {
     public Suggestion merge(Suggestion suggestion) {
         EntityTransaction tx = beginTransaction();
         try {
-            Suggestion managedSuggestion = entityManager.merge(suggestion); // Store the managed instance
+            Suggestion managedSuggestion = entityManager.merge(suggestion);
             tx.commit();
-            return managedSuggestion; // Return the managed entity
+            return managedSuggestion;
         }catch(RuntimeException e) {
             if(tx.isActive()) tx.rollback();
             throw e;

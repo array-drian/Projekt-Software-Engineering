@@ -71,8 +71,12 @@ public class UserDAO {
     //Check if a Username is already taken
     public Long checkUsername(User user) {
         try {
-            return entityManager.createQuery("SELECT COUNT(u) FROM User u WHERE u.userName = :userName AND u.isActive = true", Long.class)
+            return entityManager.createQuery("SELECT COUNT(u) FROM User u " +
+            "WHERE u.userName = :userName " +
+            "AND u.isActive = true " +
+            "AND u.userID <> :userID", Long.class)
                 .setParameter("userName", user.getUserName())
+                .setParameter("userID", user.getUserID())
                 .getSingleResult();
         }catch(NoResultException e) {
             return null;
