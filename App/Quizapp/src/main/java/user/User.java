@@ -33,7 +33,7 @@ public class User implements Serializable
     private List<Suggestion> suggestions = new ArrayList<>();
 
     @ManyToMany(mappedBy = "users")
-    private List<Game> matches = new ArrayList<>();
+    private List<Game> games = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Score> scores = new ArrayList<>();
@@ -75,8 +75,8 @@ public class User implements Serializable
         return this.isMod;
     }
 
-    public List<Game> getMatches() {
-        return this.matches;
+    public List<Game> getGames() {
+        return this.games;
     }
 
     public List<Score> getScores() {

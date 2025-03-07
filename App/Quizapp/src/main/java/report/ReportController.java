@@ -109,7 +109,7 @@ public class ReportController implements Serializable {
     }
     
     //Selects next Report
-    public void nextSuggestion() {
+    public void nextReport() {
         if(this.pendingReports != null && !this.pendingReports.isEmpty()) {
             this.index += 1;
             this.report = this.pendingReports.get(this.index);
@@ -119,7 +119,7 @@ public class ReportController implements Serializable {
     }
 
     //Selects previous Report
-    public void previousSuggestion() {
+    public void previousReport() {
         if(this.pendingReports != null && !this.pendingReports.isEmpty()) {
             this.index -=1 ;
             this.report = this.pendingReports.get(this.index);

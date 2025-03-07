@@ -10,10 +10,6 @@ public class CurrentGame implements Serializable {
 
     private Game game = null;
 
-    public void reset() {
-        this.game= null;
-    }
-
     //Getter
 
     public Game getGame() {
@@ -30,5 +26,9 @@ public class CurrentGame implements Serializable {
 
     public boolean isValid() {
         return this.game != null;
+    }
+
+    public void reset() {
+        this.game= null;
     }
 }

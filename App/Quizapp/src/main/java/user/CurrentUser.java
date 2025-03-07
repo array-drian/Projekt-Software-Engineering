@@ -10,10 +10,6 @@ public class CurrentUser implements Serializable {
 
     private User user = null;
 
-    public void reset() {
-        this.user= null;
-    }
-
     //Getter
 
     public User getUser() {
@@ -30,5 +26,9 @@ public class CurrentUser implements Serializable {
 
     public boolean isValid() {
         return this.user != null;
+    }
+
+    public void reset() {
+        this.user= null;
     }
 }

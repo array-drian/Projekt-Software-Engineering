@@ -22,7 +22,7 @@ public class LeaderboardController implements Serializable {
 
     @PostConstruct
     public void init() {
-        loadStatistics();
+        loadLeaderboard();
     }
 
     //Getter
@@ -38,7 +38,7 @@ public class LeaderboardController implements Serializable {
     //Other
     
     //Loads leaderboard statistics
-    public void loadStatistics() {
+    public void loadLeaderboard() {
         this.top10UsersByScoreCount = scoreDAO.getTop10UsersByScoreCount();
         this.top10UsersByTotalScore = scoreDAO.getTop10UsersByTotalScore();
     }

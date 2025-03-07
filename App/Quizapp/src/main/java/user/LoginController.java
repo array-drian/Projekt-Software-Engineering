@@ -16,14 +16,6 @@ import other.App;
 @ViewScoped
 public class LoginController implements Serializable {
 
-    @Inject
-    private App app;
-
-    @Inject
-    private CurrentUser currentUser;
-
-    private static final String salt = "H7sk6V725NVxqDq05DVnraZV";
-
     private String userName;
 
     private String userPass;
@@ -31,6 +23,14 @@ public class LoginController implements Serializable {
     private String tempUsername;
 
     private boolean login = true;
+
+    private static final String salt = "H7sk6V725NVxqDq05DVnraZV";
+
+    @Inject
+    private App app;
+
+    @Inject
+    private CurrentUser currentUser;
 
     //Getter
 
@@ -66,12 +66,6 @@ public class LoginController implements Serializable {
 
     //Other
 
-    //Logout a user
-    public String logout() {
-        currentUser.reset();
-        return "index.xhtml?faces-redirect=true";
-    }
-
     //Validate the Username
     public void postValidateUser(ComponentSystemEvent ev) {
         UIInput temp = (UIInput) ev.getComponent();
@@ -97,5 +91,11 @@ public class LoginController implements Serializable {
         }else {
             return "";
         }
+    }
+
+    //Logout a user
+    public String logout() {
+        currentUser.reset();
+        return "index.xhtml?faces-redirect=true";
     }
 }
