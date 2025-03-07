@@ -107,8 +107,12 @@
                                     <f:ajax render="@form suggestionsWrapper" />
                                 </h:commandButton>
     
-                                <h:commandButton value="Zurück" action="#{suggestionController.previousSuggestion}" disabled="#{suggestionController.index == 0}" class="btn btn-outline-primary me-2" />
-                                <h:commandButton value="Vor" action="#{suggestionController.nextSuggestion}" disabled="#{suggestionController.index == suggestionController.maxIndex}" class="btn btn-outline-primary me-2" />
+                                <h:commandButton value="Zurück" action="#{suggestionController.previousSuggestion}" disabled="#{suggestionController.index == 0}" class="btn btn-outline-primary me-2">
+                                    <f:ajax render="@form" />
+                                </h:commandButton>
+                                <h:commandButton value="Vor" action="#{suggestionController.nextSuggestion}" disabled="#{suggestionController.index == suggestionController.maxIndex}" class="btn btn-outline-primary me-2">
+                                    <f:ajax render="@form" />
+                                </h:commandButton>
     
                                 <h:outputText value="#{suggestionController.getIndex() + 1} / #{suggestionController.getMaxIndex() + 1}" /></p>
                                 <h:messages for="suggestionsForm" layout="table" class="text-danger" />
@@ -143,9 +147,13 @@
                                     <f:ajax execute="@form" render="@form reportsWrapper" />
                                 </h:commandButton>
     
-                                <h:commandButton value="Zurück" action="#{reportController.previousSuggestion}" disabled="#{reportController.index == 0}" class="btn btn-outline-primary me-2" />
+                                <h:commandButton value="Zurück" action="#{reportController.previousSuggestion}" disabled="#{reportController.index == 0}" class="btn btn-outline-primary me-2">
+                                    <f:ajax render="@form" />
+                                </h:commandButton>
     
-                                <h:commandButton value="Vor" action="#{reportController.nextSuggestion}" disabled="#{reportController.index == reportController.maxIndex}" class="btn btn-outline-primary me-2" />
+                                <h:commandButton value="Vor" action="#{reportController.nextSuggestion}" disabled="#{reportController.index == reportController.maxIndex}" class="btn btn-outline-primary me-2">
+                                    <f:ajax render="@form" />
+                                </h:commandButton>
     
                                 <h:outputText value="#{reportController.index + 1} / #{reportController.maxIndex + 1}" /></p>
                                 <h:messages for="reportsForm" layout="table" class="text-danger" />
