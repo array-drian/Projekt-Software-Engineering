@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import report.Report;
 import score.Score;
 import suggestion.Suggestion;
 
@@ -31,6 +32,9 @@ public class User implements Serializable
 
     @OneToMany(mappedBy = "byUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Suggestion> suggestions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "byUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports = new ArrayList<>();
 
     @ManyToMany(mappedBy = "users")
     private List<Game> games = new ArrayList<>();
@@ -73,6 +77,14 @@ public class User implements Serializable
 
     public boolean getIsMod() {
         return this.isMod;
+    }
+
+    public List<Suggestion> getSuggestions() {
+        return this.suggestions;
+    }
+
+    public List<Report> getReports() {
+        return this.reports;
     }
 
     public List<Game> getGames() {
